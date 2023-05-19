@@ -14,6 +14,8 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 import { Injectable } from '@angular/core';
+import { CRUDService, IPage, IQueryParams } from './crud.service';
+import { Observable, map } from 'rxjs';
 
 export interface IGroupInput {
   name: string;
@@ -43,5 +45,42 @@ export class Group implements IGroup {
   providedIn: 'root',
 })
 export class GroupService {
-  constructor() {}
+  constructor(protected _crud: CRUDService<IGroupInput, IGroup>) {}
+
+  queryProjects(params: IQueryParams = {}) {
+    return this._crud.query('groups', params).pipe(
+      map((groups) => {
+        if (Array.isArray(groups)) {
+          return groups.map((group) => new Group(group));
+        } else {
+          return {
+            ...groups,
+            items: groups.items.map((group) => new Group(group)),
+          } as IPage<Group>;
+        }
+      })
+    );
+  }
+
+  createGroup(groupInput: IGroupInput): Observable<Group> {
+    return this._crud
+      .create('groups', groupInput)
+      .pipe(map((project) => new Group(project)));
+  }
+
+  getGroup(groupId: number): Observable<Group> {
+    return this._crud
+      .read(`groups/${groupId}`)
+      .pipe(map((group) => new Group(group)));
+  }
+
+  updateGroup(groupId: number, groupInput: IGroupInput): Observable<Group> {
+    return this._crud
+      .update(`groups/${groupId}`, groupInput)
+      .pipe(map((group) => new Group(group)));
+  }
+
+  deleteGroup(groupId: number): Observable<null> {
+    return this._crud.delete(`groups/${groupId}`);
+  }
 }
