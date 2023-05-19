@@ -20,10 +20,11 @@ import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { ToolbarComponent } from './toolbar.component';
 import { MaterialModule } from './material/material.module';
+import { GroupModule } from './group/group.module';
 
 @NgModule({
   declarations: [AppComponent, ToolbarComponent],
-  imports: [BrowserModule, AppRoutingModule, MaterialModule],
+  imports: [BrowserModule, AppRoutingModule, MaterialModule, GroupModule],
   providers: [],
   bootstrap: [AppComponent],
 })

@@ -18,9 +18,8 @@ import { CommonModule } from '@angular/common';
 import { GroupListComponent } from './group-list.component';
 
 @NgModule({
-  declarations: [
-    GroupListComponent
-  ],
+  declarations: [GroupListComponent],
   imports: [CommonModule],
+  exports: [GroupListComponent],
 })
 export class GroupModule {}
