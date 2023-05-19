@@ -4,16 +4,34 @@ import { Component } from '@angular/core';
   selector: 'app-root',
   template: `
     <app-toolbar></app-toolbar>
-    <div class="fx-row">
-      <div class="fx-flex-30">
+    <mat-drawer-container class="drawer-container" autosize>
+      <mat-drawer class="content drawer" #drawer mode="side" opened>
         <app-group-list></app-group-list>
-      </div>
-      <div class="fx-grow">
+      </mat-drawer>
+
+      <div class="content">
+        <button type="button" mat-button (click)="drawer.toggle()">
+          Toggle sidenav
+        </button>
         <router-outlet></router-outlet>
       </div>
-    </div>
+    </mat-drawer-container>
   `,
-  styleUrls: ['shared/styles/flex.scss'],
-  styles: [],
+  styles: [
+    `
+      .drawer-container {
+        width: 100vw;
+        height: calc(100vh - 64px); // 64px is the height of the toolbar
+      }
+
+      .drawer {
+        width: 260px;
+      }
+
+      .content {
+        padding: 16px;
+      }
+    `,
+  ],
 })
 export class AppComponent {}
