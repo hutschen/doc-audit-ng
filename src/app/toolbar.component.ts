@@ -17,7 +17,12 @@ import { Component } from '@angular/core';
 
 @Component({
   selector: 'app-toolbar',
-  template: ` <p>toolbar works!</p> `,
+  template: `
+    <mat-toolbar color="primary">
+      <div>DocAudit</div>
+      <ng-content></ng-content>
+    </mat-toolbar>
+  `,
   styles: [],
 })
 export class ToolbarComponent {}
