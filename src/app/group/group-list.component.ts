@@ -15,6 +15,8 @@
 
 import { Component } from '@angular/core';
 import { GroupDialogService } from './group-dialog.component';
+import { Group } from '../shared/services/group.service';
+import { firstValueFrom } from 'rxjs';
 
 @Component({
   selector: 'app-group-list',
@@ -37,8 +39,21 @@ import { GroupDialogService } from './group-dialog.component';
 })
 export class GroupListComponent {
   constructor(protected _groupDialogService: GroupDialogService) {}
+  // TODO: Use SelectionModel to select a single group
 
-  onCreateGroup(): void {
-    this._groupDialogService.openGroupDialog();
+  protected async _createOrEditGroup(project?: Group): Promise<void> {
+    const dialogRef = this._groupDialogService.openGroupDialog(project);
+    const resultingGroup = await firstValueFrom(dialogRef.afterClosed());
+    if (resultingGroup) {
+      // TODO: Update or add group
+    }
+  }
+
+  async onCreateGroup(): Promise<void> {
+    await this._createOrEditGroup();
+  }
+
+  async onEditGroup(group: Group): Promise<void> {
+    await this._createOrEditGroup(group);
   }
 }
