@@ -1,1 +1,110 @@
-/* You can add global styles to this file, and also import other style files */
+// Copyright (C) 2023 Helmar Hutschenreuter
+//
+// This program is free software: you can redistribute it and/or modify
+// it under the terms of the GNU Affero General Public License as
+// published by the Free Software Foundation, either version 3 of the
+// License, or (at your option) any later version.
+//
+// This program is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU Affero General Public License for more details.
+//
+// You should have received a copy of the GNU Affero General Public License
+// along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+@use "@angular/material" as mat;
+@import "~@fontsource/roboto/300.css";
+@import "~@fontsource/roboto/400.css";
+@import "~@fontsource/roboto/500.css";
+@import "~@fontsource/material-icons/base.css";
+@import "@angular/material/prebuilt-themes/indigo-pink.css";
+
+@include mat.core();
+
+// Define a light theme
+$light-primary: mat.define-palette(mat.$indigo-palette);
+$light-accent: mat.define-palette(mat.$pink-palette);
+$light-warn: mat.define-palette(mat.$red-palette);
+$light-theme: mat.define-light-theme(
+  (
+    color: (
+      primary: $light-primary,
+      accent: $light-accent,
+      warn: $light-warn,
+    ),
+  )
+);
+
+// Define a dark theme
+$dark-primary: $light-accent;
+$dark-accent: mat.define-palette(mat.$blue-grey-palette);
+$dark-warn: $light-warn;
+$dark-theme: mat.define-dark-theme(
+  (
+    color: (
+      primary: $dark-primary,
+      accent: $dark-accent,
+      warn: $dark-warn,
+    ),
+  )
+);
+
+// Define indicator light theme
+$indicator-light-primary: mat.define-palette(mat.$teal-palette);
+$indicator-light-accent: $light-primary;
+$indicator-light-warn: $light-primary;
+$indicator-light-theme: mat.define-light-theme(
+  (
+    color: (
+      primary: $indicator-light-primary,
+      accent: $indicator-light-accent,
+      warn: $indicator-light-warn,
+    ),
+  )
+);
+
+// Define indicator dark theme
+$indicator-dark-primary: mat.define-palette(mat.$lime-palette);
+$indicator-dark-accent: $dark-primary;
+$indicator-dark-warn: $dark-primary;
+$indicator-dark-theme: mat.define-dark-theme(
+  (
+    color: (
+      primary: $indicator-dark-primary,
+      accent: $indicator-dark-accent,
+      warn: $indicator-dark-warn,
+    ),
+  )
+);
+
+// Apply the light theme by default
+@include mat.all-component-themes($light-theme);
+
+.indicator {
+  @include mat.all-component-colors($indicator-light-theme);
+}
+
+// Apply the dark theme only when the user prefers dark themes
+@media (prefers-color-scheme: dark) {
+  @include mat.all-component-colors($dark-theme);
+
+  .indicator {
+    @include mat.all-component-colors($indicator-dark-theme);
+  }
+}
+
+html,
+body {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  font-family: Roboto, "Helvetica Neue", sans-serif;
+}
+
+// Don't wrap text in buttons
+.mat-mdc-button-base {
+  white-space: nowrap;
+}
