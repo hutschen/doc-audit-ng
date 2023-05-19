@@ -14,11 +14,12 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 import { Component } from '@angular/core';
+import { GroupDialogService } from './group-dialog.component';
 
 @Component({
   selector: 'app-group-list',
   template: `
-    <button mat-stroked-button>
+    <button mat-stroked-button (click)="onCreateGroup()">
       <mat-icon>add</mat-icon>
       New Group
     </button>
@@ -35,5 +36,9 @@ import { Component } from '@angular/core';
   ],
 })
 export class GroupListComponent {
-  onClick() {}
+  constructor(protected _groupDialogService: GroupDialogService) {}
+
+  onCreateGroup(): void {
+    this._groupDialogService.openGroupDialog();
+  }
 }
