@@ -13,10 +13,11 @@
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { GroupDialogService } from './group-dialog.component';
-import { Group } from '../shared/services/group.service';
+import { Group, GroupService } from '../shared/services/group.service';
 import { firstValueFrom } from 'rxjs';
+import { DataList } from '../shared/data';
 
 @Component({
   selector: 'app-group-list',
@@ -25,10 +26,11 @@ import { firstValueFrom } from 'rxjs';
       <mat-icon>add</mat-icon>
       New Group
     </button>
-    <mat-nav-list>
+    <mat-nav-list *ngIf="groups">
       <mat-list-item class="active">Item 1</mat-list-item>
-      <mat-list-item>Item 2</mat-list-item>
-      <mat-list-item>Item 3</mat-list-item>
+      <mat-list-item *ngFor="let group of groups.items">
+        {{ group.name }}
+      </mat-list-item>
     </mat-nav-list>
   `,
   styles: [
@@ -37,15 +39,27 @@ import { firstValueFrom } from 'rxjs';
     '.active {background-color: rgba(0, 0, 0, 0.20);}',
   ],
 })
-export class GroupListComponent {
-  constructor(protected _groupDialogService: GroupDialogService) {}
+export class GroupListComponent implements OnInit {
   // TODO: Use SelectionModel to select a single group
+  public groups!: DataList<Group>;
 
-  protected async _createOrEditGroup(project?: Group): Promise<void> {
-    const dialogRef = this._groupDialogService.openGroupDialog(project);
+  constructor(
+    protected _groupDialogService: GroupDialogService,
+    protected _groupService: GroupService
+  ) {}
+
+  ngOnInit(): void {
+    this._groupService
+      .queryGroups()
+      .subscribe((groups) => (this.groups = new DataList(groups as Group[])));
+  }
+
+  protected async _createOrEditGroup(group?: Group): Promise<void> {
+    const dialogRef = this._groupDialogService.openGroupDialog(group);
     const resultingGroup = await firstValueFrom(dialogRef.afterClosed());
     if (resultingGroup) {
-      // TODO: Update or add group
+      if (group) this.groups.updateItem(resultingGroup);
+      else this.groups.addItem(resultingGroup);
     }
   }
 
