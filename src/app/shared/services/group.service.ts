@@ -47,7 +47,7 @@ export class Group implements IGroup {
 export class GroupService {
   constructor(protected _crud: CRUDService<IGroupInput, IGroup>) {}
 
-  queryProjects(params: IQueryParams = {}) {
+  queryGroups(params: IQueryParams = {}) {
     return this._crud.query('groups', params).pipe(
       map((groups) => {
         if (Array.isArray(groups)) {
