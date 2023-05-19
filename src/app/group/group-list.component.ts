@@ -17,7 +17,12 @@ import { Component } from '@angular/core';
 
 @Component({
   selector: 'app-group-list',
-  template: ` <p>group-list works!</p> `,
-  styles: [],
+  template: `
+    <button mat-stroked-button>
+      <mat-icon>add</mat-icon>
+      New Group
+    </button>
+  `,
+  styles: ['button {width: 100%; justify-content: left}'],
 })
 export class GroupListComponent {}
