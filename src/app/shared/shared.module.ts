@@ -16,11 +16,10 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { CreateEditDialogComponent } from './components/create-edit-dialog.component';
+import { MaterialModule } from '../material/material.module';
 
 @NgModule({
-  declarations: [
-    CreateEditDialogComponent
-  ],
-  imports: [CommonModule],
+  declarations: [CreateEditDialogComponent],
+  imports: [CommonModule, MaterialModule],
 })
 export class SharedModule {}
