@@ -13,7 +13,23 @@
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-import { Component } from '@angular/core';
+import { Component, Injectable } from '@angular/core';
+import { MatDialog, MatDialogRef } from '@angular/material/dialog';
+import { Group } from '../shared/services/group.service';
+
+@Injectable({
+  providedIn: 'root',
+})
+export class GroupDialogService {
+  constructor(protected _dialog: MatDialog) {}
+
+  openGroupDialog(group?: Group): MatDialogRef<GroupDialogComponent, Group> {
+    return this._dialog.open(GroupDialogComponent, {
+      width: '500px',
+      data: group,
+    });
+  }
+}
 
 @Component({
   selector: 'app-group-dialog',
