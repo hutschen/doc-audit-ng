@@ -15,6 +15,30 @@
 
 import { Injectable } from '@angular/core';
 
+export interface IGroupInput {
+  name: string;
+}
+
+export interface IGroup extends IGroupInput {
+  id: number;
+}
+
+export class Group implements IGroup {
+  id: number;
+  name: string;
+
+  constructor(group: IGroup) {
+    this.id = group.id;
+    this.name = group.name;
+  }
+
+  toGroupInput(): IGroupInput {
+    return {
+      name: this.name,
+    };
+  }
+}
+
 @Injectable({
   providedIn: 'root',
 })
