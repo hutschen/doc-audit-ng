@@ -13,14 +13,11 @@
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-import { NgModule } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { CreateEditDialogComponent } from './components/create-edit-dialog.component';
+import { Component } from '@angular/core';
 
-@NgModule({
-  declarations: [
-    CreateEditDialogComponent
-  ],
-  imports: [CommonModule],
+@Component({
+  selector: 'app-create-edit-dialog',
+  template: ` <p>create-edit-dialog works!</p> `,
+  styles: [],
 })
-export class SharedModule {}
+export class CreateEditDialogComponent {}
