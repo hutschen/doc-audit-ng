@@ -18,10 +18,11 @@ import { CommonModule } from '@angular/common';
 import { GroupListComponent } from './group-list.component';
 import { MaterialModule } from '../material/material.module';
 import { GroupDialogComponent } from './group-dialog.component';
+import { SharedModule } from '../shared/shared.module';
 
 @NgModule({
   declarations: [GroupListComponent, GroupDialogComponent],
-  imports: [CommonModule, MaterialModule],
+  imports: [CommonModule, MaterialModule, SharedModule],
   exports: [GroupListComponent],
 })
 export class GroupModule {}

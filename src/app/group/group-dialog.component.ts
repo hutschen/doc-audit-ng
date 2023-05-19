@@ -15,7 +15,8 @@
 
 import { Component, Injectable } from '@angular/core';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
-import { Group } from '../shared/services/group.service';
+import { Group, IGroupInput } from '../shared/services/group.service';
+import { NgForm } from '@angular/forms';
 
 @Injectable({
   providedIn: 'root',
@@ -33,7 +34,31 @@ export class GroupDialogService {
 
 @Component({
   selector: 'app-group-dialog',
-  template: ` <p>group-dialog works!</p> `,
+  template: `
+    <app-create-edit-dialog
+      [createMode]="createMode"
+      objectName="Group"
+      (save)="onSave($event)"
+      (cancel)="onCancel()"
+    >
+      <div class="fx-column">
+        <!-- Group name input -->
+        <mat-form-field appearance="fill">
+          <mat-label>Group name</mat-label>
+          <input name="name" matInput [(ngModel)]="groupInput.name" required />
+        </mat-form-field>
+      </div>
+    </app-create-edit-dialog>
+  `,
+  styleUrls: ['../shared/styles/flex.scss'],
   styles: [],
 })
-export class GroupDialogComponent {}
+export class GroupDialogComponent {
+  createMode = true;
+  groupInput: IGroupInput = { name: '' };
+
+  constructor() {}
+
+  onSave(form: NgForm): void {}
+  onCancel(): void {}
+}

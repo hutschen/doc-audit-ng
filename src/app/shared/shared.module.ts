@@ -21,5 +21,6 @@ import { MaterialModule } from '../material/material.module';
 @NgModule({
   declarations: [CreateEditDialogComponent],
   imports: [CommonModule, MaterialModule],
+  exports: [CreateEditDialogComponent],
 })
 export class SharedModule {}
