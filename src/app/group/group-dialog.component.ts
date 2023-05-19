@@ -13,10 +13,19 @@
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-import { Component, Injectable } from '@angular/core';
-import { MatDialog, MatDialogRef } from '@angular/material/dialog';
-import { Group, IGroupInput } from '../shared/services/group.service';
+import { Component, Inject, Injectable } from '@angular/core';
+import {
+  MAT_DIALOG_DATA,
+  MatDialog,
+  MatDialogRef,
+} from '@angular/material/dialog';
+import {
+  Group,
+  GroupService,
+  IGroupInput,
+} from '../shared/services/group.service';
 import { NgForm } from '@angular/forms';
+import { Observable } from 'rxjs';
 
 @Injectable({
   providedIn: 'root',
@@ -54,11 +63,38 @@ export class GroupDialogService {
   styles: [],
 })
 export class GroupDialogComponent {
-  createMode = true;
   groupInput: IGroupInput = { name: '' };
 
-  constructor() {}
+  constructor(
+    protected _dialogRef: MatDialogRef<GroupDialogComponent>,
+    protected _groupService: GroupService,
+    @Inject(MAT_DIALOG_DATA) protected _group?: Group
+  ) {
+    if (this._group) {
+      this.groupInput = this._group.toGroupInput();
+    }
+  }
 
-  onSave(form: NgForm): void {}
-  onCancel(): void {}
+  get createMode(): boolean {
+    return !this._group;
+  }
+
+  onSave(form: NgForm): void {
+    if (form.valid) {
+      let group$: Observable<Group>;
+      if (!this._group) {
+        group$ = this._groupService.createGroup(this.groupInput);
+      } else {
+        group$ = this._groupService.updateGroup(
+          this._group.id,
+          this.groupInput
+        );
+      }
+      group$.subscribe((group) => this._dialogRef.close(group));
+    }
+  }
+
+  onCancel(): void {
+    this._dialogRef.close();
+  }
 }
