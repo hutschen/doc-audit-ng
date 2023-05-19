@@ -22,7 +22,18 @@ import { Component } from '@angular/core';
       <mat-icon>add</mat-icon>
       New Group
     </button>
+    <mat-nav-list>
+      <mat-list-item class="active">Item 1</mat-list-item>
+      <mat-list-item>Item 2</mat-list-item>
+      <mat-list-item>Item 3</mat-list-item>
+    </mat-nav-list>
   `,
-  styles: ['button {width: 100%; justify-content: left}'],
+  styles: [
+    'button {width: 100%; justify-content: left} .active {background-color: #ccc}',
+    'mat-list-item {border-radius: 4px}',
+    '.active {background-color: rgba(0, 0, 0, 0.20);}',
+  ],
 })
-export class GroupListComponent {}
+export class GroupListComponent {
+  onClick() {}
+}
