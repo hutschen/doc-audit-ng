@@ -19,9 +19,14 @@ import { CreateEditDialogComponent } from './components/create-edit-dialog.compo
 import { MaterialModule } from '../material/material.module';
 import { HttpClientModule } from '@angular/common/http';
 import { ConfirmDialogComponent } from './components/confirm-dialog.component';
+import { UploadDialogComponent } from './components/upload-dialog.component';
 
 @NgModule({
-  declarations: [CreateEditDialogComponent, ConfirmDialogComponent],
+  declarations: [
+    ConfirmDialogComponent,
+    CreateEditDialogComponent,
+    UploadDialogComponent,
+  ],
   imports: [CommonModule, MaterialModule, HttpClientModule],
   exports: [CreateEditDialogComponent, HttpClientModule],
 })
