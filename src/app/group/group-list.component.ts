@@ -22,11 +22,13 @@ import { DataList } from '../shared/data';
 @Component({
   selector: 'app-group-list',
   template: `
-    <button mat-stroked-button (click)="onCreateGroup()">
-      <mat-icon>add</mat-icon>
-      New Group
-    </button>
-    <mat-nav-list *ngIf="groups">
+    <div class="button-container">
+      <button mat-stroked-button (click)="onCreateGroup()">
+        <mat-icon>add</mat-icon>
+        New Group
+      </button>
+    </div>
+    <mat-nav-list class="list-container" *ngIf="groups">
       <mat-list-item class="active">Item 1</mat-list-item>
       <mat-list-item *ngFor="let group of groups.items">
         {{ group.name }}
@@ -34,6 +36,8 @@ import { DataList } from '../shared/data';
     </mat-nav-list>
   `,
   styles: [
+    '.button-container { padding: 16px; box-sizing: border-box; }',
+    '.list-container { overflow-y: auto; height: calc(100% - 68px); padding: 16px; box-sizing: border-box; }',
     'button {width: 100%; justify-content: left} .active {background-color: #ccc}',
     'mat-list-item {border-radius: 4px}',
     '.active {background-color: rgba(0, 0, 0, 0.20);}',
