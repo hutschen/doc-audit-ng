@@ -5,7 +5,7 @@ import { Component } from '@angular/core';
   template: `
     <app-toolbar></app-toolbar>
     <mat-drawer-container class="drawer-container" autosize>
-      <mat-drawer class="content drawer" #drawer mode="side" opened>
+      <mat-drawer class="drawer" #drawer mode="side" opened>
         <app-group-list></app-group-list>
       </mat-drawer>
 
@@ -26,10 +26,6 @@ import { Component } from '@angular/core';
 
       .drawer {
         width: 260px;
-      }
-
-      .content {
-        padding: 16px;
       }
     `,
   ],
