@@ -22,6 +22,7 @@ import { SharedModule } from '../shared/shared.module';
 import { GroupViewComponent } from './group-view.component';
 import { RouterModule, Routes } from '@angular/router';
 import { GroupResolver, GroupsResolver } from './group-resolver.service';
+import { DocumentModule } from '../document/document.module';
 
 const routes: Routes = [
   {
@@ -40,6 +41,7 @@ const routes: Routes = [
   declarations: [GroupListComponent, GroupDialogComponent, GroupViewComponent],
   imports: [
     CommonModule,
+    DocumentModule,
     MaterialModule,
     RouterModule.forChild(routes),
     SharedModule,

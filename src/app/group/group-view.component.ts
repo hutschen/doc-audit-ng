@@ -20,37 +20,27 @@ import { Group, GroupService } from './group.service';
 @Component({
   selector: 'app-group-view',
   template: `
-    <div class="header fx-row">
-      <div class="header-content fx-row fx-gap-10">
-        <button class="icon-button" mat-stroked-button matTooltip="Edit Group">
-          <mat-icon class="no-margin">edit</mat-icon>
-        </button>
-        <button
-          class="icon-button"
-          mat-stroked-button
-          matTooltip="Delete Group"
-        >
-          <mat-icon class="no-margin">delete</mat-icon>
-        </button>
+    <mat-drawer-container class="drawer-container" autosize>
+      <mat-drawer class="drawer" #drawer mode="side" opened>
+        <app-group-list></app-group-list>
+      </mat-drawer>
+
+      <div class="content">
+        <app-document-list *ngIf="group"></app-document-list>
       </div>
-      <mat-divider vertical></mat-divider>
-      <div class="header-content">
-        <button mat-flat-button color="accent">
-          <mat-icon>bolt</mat-icon>
-          Query
-        </button>
-      </div>
-    </div>
-    <mat-divider></mat-divider>
-    <div class="content">
-      <p>group-view works!</p>
-    </div>
+    </mat-drawer-container>
   `,
-  styleUrls: ['../shared/styles/flex.scss', '../shared/styles/truncate.scss'],
   styles: [
-    '.header-content { padding: 16px; box-sizing: border-box; }',
-    '.no-margin { margin: 0; }',
-    '.icon-button { min-width: 0px; }',
+    `
+      .drawer-container {
+        width: 100vw;
+        height: calc(100vh - 64px); // 64px is the height of the toolbar
+      }
+
+      .drawer {
+        width: 260px;
+      }
+    `,
   ],
 })
 export class GroupViewComponent {
