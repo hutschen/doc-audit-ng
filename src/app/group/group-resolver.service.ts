@@ -51,3 +51,15 @@ export class GroupResolver implements Resolve<Group> {
     );
   }
 }
+
+// FIXME: Replace by a functional resolver
+@Injectable({
+  providedIn: 'root',
+})
+export class GroupsResolver implements Resolve<Group[]> {
+  constructor(protected _groupService: GroupService) {}
+
+  resolve(): Observable<Group[]> {
+    return this._groupService.queryGroups() as Observable<Group[]>;
+  }
+}

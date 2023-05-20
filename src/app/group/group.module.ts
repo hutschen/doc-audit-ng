@@ -21,16 +21,17 @@ import { GroupDialogComponent } from './group-dialog.component';
 import { SharedModule } from '../shared/shared.module';
 import { GroupViewComponent } from './group-view.component';
 import { RouterModule, Routes } from '@angular/router';
-import { GroupResolver } from './group-resolver.service';
+import { GroupResolver, GroupsResolver } from './group-resolver.service';
 
 const routes: Routes = [
   {
     path: 'groups',
+    resolve: { groups: GroupsResolver },
     component: GroupViewComponent,
   },
   {
     path: 'groups/:groupId',
-    resolve: { group: GroupResolver },
+    resolve: { groups: GroupsResolver, group: GroupResolver },
     component: GroupViewComponent,
   },
 ];
