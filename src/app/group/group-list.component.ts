@@ -28,6 +28,7 @@ import { DataList } from '../shared/data';
         New Group
       </button>
     </div>
+    <mat-divider></mat-divider>
     <mat-nav-list class="list-container" *ngIf="groups">
       <mat-list-item class="active">Item 1</mat-list-item>
       <mat-list-item *ngFor="let group of groups.items">
@@ -37,7 +38,7 @@ import { DataList } from '../shared/data';
   `,
   styles: [
     '.button-container { padding: 16px; box-sizing: border-box; }',
-    '.list-container { overflow-y: auto; height: calc(100% - 68px); padding: 0 16px 16px 16px; box-sizing: border-box; }',
+    '.list-container { overflow-y: auto; height: calc(100% - 69px); padding: 16px; box-sizing: border-box; }',
     'button {width: 100%; justify-content: left} .active {background-color: #ccc}',
     'mat-list-item {border-radius: 4px}',
     '.active {background-color: rgba(0, 0, 0, 0.20);}',
