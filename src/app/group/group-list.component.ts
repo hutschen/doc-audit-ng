@@ -37,7 +37,7 @@ import { DataList } from '../shared/data';
   `,
   styles: [
     '.button-container { padding: 16px; box-sizing: border-box; }',
-    '.list-container { overflow-y: auto; height: calc(100% - 68px); padding: 16px; box-sizing: border-box; }',
+    '.list-container { overflow-y: auto; height: calc(100% - 68px); padding: 0 16px 16px 16px; box-sizing: border-box; }',
     'button {width: 100%; justify-content: left} .active {background-color: #ccc}',
     'mat-list-item {border-radius: 4px}',
     '.active {background-color: rgba(0, 0, 0, 0.20);}',
