@@ -13,26 +13,14 @@
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-import { NgModule } from '@angular/core';
-import { BrowserModule } from '@angular/platform-browser';
+import { Observable } from 'rxjs';
+import { IDataItem } from './data';
 
-import { AppComponent } from './app.component';
-import { ToolbarComponent } from './toolbar.component';
-import { MaterialModule } from './material/material.module';
-import { GroupModule } from './group/group.module';
-import { RouterModule, Routes } from '@angular/router';
+export interface Interaction<D extends IDataItem> {
+  item: D;
+  action: 'create' | 'update' | 'delete';
+}
 
-const routes: Routes = [{ path: '**', redirectTo: 'groups' }];
-
-@NgModule({
-  declarations: [AppComponent, ToolbarComponent],
-  imports: [
-    BrowserModule,
-    GroupModule,
-    MaterialModule,
-    RouterModule.forRoot(routes),
-  ],
-  providers: [],
-  bootstrap: [AppComponent],
-})
-export class AppModule {}
+export interface InteractionService<D extends IDataItem> {
+  readonly interactions$: Observable<Interaction<D>>;
+}

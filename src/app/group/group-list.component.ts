@@ -13,65 +13,75 @@
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-import { Component, OnInit } from '@angular/core';
-import { GroupDialogService } from './group-dialog.component';
-import { Group, GroupService } from '../shared/services/group.service';
-import { firstValueFrom } from 'rxjs';
+import { Component, OnDestroy } from '@angular/core';
+import { Group } from './group.service';
+import { Subscription, tap } from 'rxjs';
 import { DataList } from '../shared/data';
+import { ActivatedRoute, Router } from '@angular/router';
+import { GroupInteractionService } from './group-interaction.service';
 
 @Component({
   selector: 'app-group-list',
   template: `
     <div class="button-container">
-      <button mat-stroked-button (click)="onCreateGroup()">
+      <button mat-stroked-button (click)="groupInteractions.onCreateGroup()">
         <mat-icon>add</mat-icon>
         New Group
       </button>
     </div>
+    <mat-divider></mat-divider>
     <mat-nav-list class="list-container" *ngIf="groups">
-      <mat-list-item class="active">Item 1</mat-list-item>
-      <mat-list-item *ngFor="let group of groups.items">
+      <mat-list-item
+        *ngFor="let group of reversedGroups"
+        [class.active]="group.id === activeGroup?.id"
+        [routerLink]="['/groups', group.id]"
+      >
         {{ group.name }}
       </mat-list-item>
     </mat-nav-list>
   `,
   styles: [
     '.button-container { padding: 16px; box-sizing: border-box; }',
-    '.list-container { overflow-y: auto; height: calc(100% - 68px); padding: 16px; box-sizing: border-box; }',
+    '.list-container { overflow-y: auto; height: calc(100% - 69px); padding: 16px; box-sizing: border-box; }',
     'button {width: 100%; justify-content: left} .active {background-color: #ccc}',
     'mat-list-item {border-radius: 4px}',
     '.active {background-color: rgba(0, 0, 0, 0.20);}',
   ],
 })
-export class GroupListComponent implements OnInit {
-  // TODO: Use SelectionModel to select a single group
-  public groups!: DataList<Group>;
+export class GroupListComponent implements OnDestroy {
+  public activeGroup?: Group;
+  public groups = new DataList<Group>();
+  protected _groupInteractionsSubscription: Subscription;
 
   constructor(
-    protected _groupDialogService: GroupDialogService,
-    protected _groupService: GroupService
-  ) {}
+    route: ActivatedRoute,
+    protected _router: Router,
+    readonly groupInteractions: GroupInteractionService
+  ) {
+    route.data.subscribe((data: any) => {
+      this.groups.items = data.groups as Group[];
+      this.activeGroup = data.group as Group;
+    });
 
-  ngOnInit(): void {
-    this._groupService
-      .queryGroups()
-      .subscribe((groups) => (this.groups = new DataList(groups as Group[])));
+    this._groupInteractionsSubscription = this.groups.syncInteractions(
+      this.groupInteractions.interactions$.pipe(
+        tap((interaction) => {
+          if (interaction.action === 'create') {
+            this._router.navigate(['/groups', interaction.item.id]);
+          } else if (interaction.action === 'delete') {
+            this._router.navigate(['/groups']);
+          }
+        })
+      )
+    );
   }
 
-  protected async _createOrEditGroup(group?: Group): Promise<void> {
-    const dialogRef = this._groupDialogService.openGroupDialog(group);
-    const resultingGroup = await firstValueFrom(dialogRef.afterClosed());
-    if (resultingGroup) {
-      if (group) this.groups.updateItem(resultingGroup);
-      else this.groups.addItem(resultingGroup);
-    }
+  get reversedGroups(): Group[] {
+    // To display the groups in reverse order (newest first)
+    return this.groups.items.slice().reverse();
   }
 
-  async onCreateGroup(): Promise<void> {
-    await this._createOrEditGroup();
-  }
-
-  async onEditGroup(group: Group): Promise<void> {
-    await this._createOrEditGroup(group);
+  ngOnDestroy(): void {
+    this._groupInteractionsSubscription.unsubscribe();
   }
 }

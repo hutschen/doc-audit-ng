@@ -14,7 +14,11 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 import { Injectable } from '@angular/core';
-import { CRUDService, IPage, IQueryParams } from './crud.service';
+import {
+  CRUDService,
+  IPage,
+  IQueryParams,
+} from '../shared/services/crud.service';
 import { Observable, map } from 'rxjs';
 
 export interface IGroupInput {

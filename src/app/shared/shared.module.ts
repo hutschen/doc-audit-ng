@@ -18,9 +18,10 @@ import { CommonModule } from '@angular/common';
 import { CreateEditDialogComponent } from './components/create-edit-dialog.component';
 import { MaterialModule } from '../material/material.module';
 import { HttpClientModule } from '@angular/common/http';
+import { ConfirmDialogComponent } from './components/confirm-dialog.component';
 
 @NgModule({
-  declarations: [CreateEditDialogComponent],
+  declarations: [CreateEditDialogComponent, ConfirmDialogComponent],
   imports: [CommonModule, MaterialModule, HttpClientModule],
   exports: [CreateEditDialogComponent, HttpClientModule],
 })

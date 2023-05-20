@@ -19,10 +19,33 @@ import { GroupListComponent } from './group-list.component';
 import { MaterialModule } from '../material/material.module';
 import { GroupDialogComponent } from './group-dialog.component';
 import { SharedModule } from '../shared/shared.module';
+import { GroupViewComponent } from './group-view.component';
+import { RouterModule, Routes } from '@angular/router';
+import { GroupResolver, GroupsResolver } from './group-resolver.service';
+import { DocumentModule } from '../document/document.module';
+
+const routes: Routes = [
+  {
+    path: 'groups',
+    resolve: { groups: GroupsResolver },
+    component: GroupViewComponent,
+  },
+  {
+    path: 'groups/:groupId',
+    resolve: { groups: GroupsResolver, group: GroupResolver },
+    component: GroupViewComponent,
+  },
+];
 
 @NgModule({
-  declarations: [GroupListComponent, GroupDialogComponent],
-  imports: [CommonModule, MaterialModule, SharedModule],
+  declarations: [GroupListComponent, GroupDialogComponent, GroupViewComponent],
+  imports: [
+    CommonModule,
+    DocumentModule,
+    MaterialModule,
+    RouterModule.forChild(routes),
+    SharedModule,
+  ],
   exports: [GroupListComponent],
 })
 export class GroupModule {}
