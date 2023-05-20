@@ -18,6 +18,7 @@ import { Interaction, InteractionService } from '../shared/interaction';
 import { Group, GroupService } from './group.service';
 import { Subject, firstValueFrom } from 'rxjs';
 import { GroupDialogService } from './group-dialog.component';
+import { ConfirmDialogService } from '../shared/components/confirm-dialog.component';
 
 @Injectable({
   providedIn: 'root',
@@ -28,9 +29,9 @@ export class GroupInteractionService implements InteractionService<Group> {
 
   constructor(
     protected _groupService: GroupService,
-    protected _groupDialogService: GroupDialogService
+    protected _groupDialogService: GroupDialogService,
+    protected _confirmDialogService: ConfirmDialogService
   ) {}
-  // TODO: Add confirm dialog and corresponding service
 
   protected async _createOrEditGroup(group?: Group): Promise<void> {
     const dialogRef = this._groupDialogService.openGroupDialog(group);
@@ -49,5 +50,17 @@ export class GroupInteractionService implements InteractionService<Group> {
 
   async onEditGroup(group: Group): Promise<void> {
     await this._createOrEditGroup(group);
+  }
+
+  async onDeleteGroup(group: Group): Promise<void> {
+    const confirmDialogRef = this._confirmDialogService.openConfirmDialog(
+      'Delete Group',
+      `Do you really want to delete group "${group.name}"?`
+    );
+    const confirmed = await firstValueFrom(confirmDialogRef.afterClosed());
+    if (confirmed) {
+      await firstValueFrom(this._groupService.deleteGroup(group.id));
+      this._interactionSubject.next({ item: group, action: 'delete' });
+    }
   }
 }
