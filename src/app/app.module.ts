@@ -22,7 +22,7 @@ import { MaterialModule } from './material/material.module';
 import { GroupModule } from './group/group.module';
 import { RouterModule, Routes } from '@angular/router';
 
-const routes: Routes = [];
+const routes: Routes = [{ path: '**', redirectTo: 'groups' }];
 
 @NgModule({
   declarations: [AppComponent, ToolbarComponent],

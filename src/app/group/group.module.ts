@@ -20,10 +20,23 @@ import { MaterialModule } from '../material/material.module';
 import { GroupDialogComponent } from './group-dialog.component';
 import { SharedModule } from '../shared/shared.module';
 import { GroupViewComponent } from './group-view.component';
+import { RouterModule, Routes } from '@angular/router';
+
+const routes: Routes = [
+  {
+    path: 'groups',
+    component: GroupViewComponent,
+  },
+];
 
 @NgModule({
   declarations: [GroupListComponent, GroupDialogComponent, GroupViewComponent],
-  imports: [CommonModule, MaterialModule, SharedModule],
+  imports: [
+    CommonModule,
+    MaterialModule,
+    RouterModule.forChild(routes),
+    SharedModule,
+  ],
   exports: [GroupListComponent],
 })
 export class GroupModule {}
