@@ -10,9 +10,9 @@ import { Component } from '@angular/core';
       </mat-drawer>
 
       <div class="content">
-        <button type="button" mat-button (click)="drawer.toggle()">
+        <!-- <button type="button" mat-button (click)="drawer.toggle()">
           Toggle sidenav
-        </button>
+        </button> -->
         <router-outlet></router-outlet>
       </div>
     </mat-drawer-container>
