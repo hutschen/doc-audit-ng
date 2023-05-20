@@ -32,7 +32,7 @@ import { ActivatedRoute, Router } from '@angular/router';
     <mat-divider></mat-divider>
     <mat-nav-list class="list-container" *ngIf="groups">
       <mat-list-item
-        *ngFor="let group of groups.items"
+        *ngFor="let group of reversedGroups"
         [class.active]="group.id === activeGroup?.id"
         [routerLink]="['/groups', group.id]"
       >
@@ -54,6 +54,7 @@ export class GroupListComponent {
 
   constructor(
     route: ActivatedRoute,
+    protected _router: Router,
     protected _groupDialogService: GroupDialogService
   ) {
     route.data.subscribe((data: any) => {
@@ -62,12 +63,20 @@ export class GroupListComponent {
     });
   }
 
+  get reversedGroups(): Group[] {
+    // To display the groups in reverse order (newest first)
+    return this.groups.items.slice().reverse();
+  }
+
   protected async _createOrEditGroup(group?: Group): Promise<void> {
     const dialogRef = this._groupDialogService.openGroupDialog(group);
     const resultingGroup = await firstValueFrom(dialogRef.afterClosed());
     if (resultingGroup) {
       if (group) this.groups.updateItem(resultingGroup);
-      else this.groups.addItem(resultingGroup);
+      else {
+        this.groups.addItem(resultingGroup);
+        this._router.navigate(['/groups', resultingGroup.id]);
+      }
     }
   }
 
