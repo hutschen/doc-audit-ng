@@ -13,17 +13,11 @@
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-import { NgModule } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { GroupListComponent } from './group-list.component';
-import { MaterialModule } from '../material/material.module';
-import { GroupDialogComponent } from './group-dialog.component';
-import { SharedModule } from '../shared/shared.module';
-import { GroupViewComponent } from './group-view.component';
+import { Component } from '@angular/core';
 
-@NgModule({
-  declarations: [GroupListComponent, GroupDialogComponent, GroupViewComponent],
-  imports: [CommonModule, MaterialModule, SharedModule],
-  exports: [GroupListComponent],
+@Component({
+  selector: 'app-group-view',
+  template: ` <p>group-view works!</p> `,
+  styles: [],
 })
-export class GroupModule {}
+export class GroupViewComponent {}
