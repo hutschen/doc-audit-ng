@@ -14,18 +14,15 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 import { NgModule } from '@angular/core';
-import { BrowserModule } from '@angular/platform-browser';
-
-import { AppRoutingModule } from './app-routing.module';
-import { AppComponent } from './app.component';
-import { ToolbarComponent } from './toolbar.component';
-import { MaterialModule } from './material/material.module';
-import { GroupModule } from './group/group.module';
+import { CommonModule } from '@angular/common';
+import { GroupListComponent } from './group-list.component';
+import { MaterialModule } from '../material/material.module';
+import { GroupDialogComponent } from './group-dialog.component';
+import { SharedModule } from '../shared/shared.module';
 
 @NgModule({
-  declarations: [AppComponent, ToolbarComponent],
-  imports: [BrowserModule, AppRoutingModule, MaterialModule, GroupModule],
-  providers: [],
-  bootstrap: [AppComponent],
+  declarations: [GroupListComponent, GroupDialogComponent],
+  imports: [CommonModule, MaterialModule, SharedModule],
+  exports: [GroupListComponent],
 })
-export class AppModule {}
+export class GroupModule {}

@@ -13,19 +13,19 @@
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-import { NgModule } from '@angular/core';
-import { BrowserModule } from '@angular/platform-browser';
+import { TestBed } from '@angular/core/testing';
 
-import { AppRoutingModule } from './app-routing.module';
-import { AppComponent } from './app.component';
-import { ToolbarComponent } from './toolbar.component';
-import { MaterialModule } from './material/material.module';
-import { GroupModule } from './group/group.module';
+import { GroupService } from './group.service';
 
-@NgModule({
-  declarations: [AppComponent, ToolbarComponent],
-  imports: [BrowserModule, AppRoutingModule, MaterialModule, GroupModule],
-  providers: [],
-  bootstrap: [AppComponent],
-})
-export class AppModule {}
+describe('GroupService', () => {
+  let service: GroupService;
+
+  beforeEach(() => {
+    TestBed.configureTestingModule({});
+    service = TestBed.inject(GroupService);
+  });
+
+  xit('should be created', () => {
+    expect(service).toBeTruthy();
+  });
+});

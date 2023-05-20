@@ -13,19 +13,8 @@
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-import { NgModule } from '@angular/core';
-import { BrowserModule } from '@angular/platform-browser';
-
-import { AppRoutingModule } from './app-routing.module';
-import { AppComponent } from './app.component';
-import { ToolbarComponent } from './toolbar.component';
-import { MaterialModule } from './material/material.module';
-import { GroupModule } from './group/group.module';
-
-@NgModule({
-  declarations: [AppComponent, ToolbarComponent],
-  imports: [BrowserModule, AppRoutingModule, MaterialModule, GroupModule],
-  providers: [],
-  bootstrap: [AppComponent],
-})
-export class AppModule {}
+.truncate {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}

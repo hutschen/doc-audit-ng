@@ -13,19 +13,28 @@
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-import { NgModule } from '@angular/core';
-import { BrowserModule } from '@angular/platform-browser';
+export interface IDataItem {
+  id: number;
+}
 
-import { AppRoutingModule } from './app-routing.module';
-import { AppComponent } from './app.component';
-import { ToolbarComponent } from './toolbar.component';
-import { MaterialModule } from './material/material.module';
-import { GroupModule } from './group/group.module';
+export class DataList<D extends IDataItem> {
+  constructor(readonly items: D[] = []) {}
 
-@NgModule({
-  declarations: [AppComponent, ToolbarComponent],
-  imports: [BrowserModule, AppRoutingModule, MaterialModule, GroupModule],
-  providers: [],
-  bootstrap: [AppComponent],
-})
-export class AppModule {}
+  addItem(item: D): void {
+    this.items.push(item);
+  }
+
+  updateItem(item: D): void {
+    const index = this.items.findIndex((i) => i.id === item.id);
+    if (index > -1) {
+      this.items[index] = item;
+    }
+  }
+
+  removeItem(item: D): void {
+    const index = this.items.findIndex((i) => i.id === item.id);
+    if (index > -1) {
+      this.items.splice(index, 1);
+    }
+  }
+}
