@@ -14,11 +14,8 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 import { Component } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute } from '@angular/router';
 import { Group, GroupService } from './group.service';
-import { Observable, catchError, map, of, switchMap } from 'rxjs';
-import { toInt } from 'radash';
-import { HttpErrorResponse } from '@angular/common/http';
 
 @Component({
   selector: 'app-group-view',
@@ -57,27 +54,14 @@ import { HttpErrorResponse } from '@angular/common/http';
   ],
 })
 export class GroupViewComponent {
-  group$: Observable<Group | null>;
+  group!: Group;
 
   constructor(
     protected _route: ActivatedRoute,
-    protected _router: Router,
     protected _groupService: GroupService
   ) {
-    this.group$ = this._route.paramMap.pipe(
-      map((params) => toInt(params.get('groupId'), null)),
-      switchMap((groupId) => {
-        if (groupId === null) return of(null);
-        return this._groupService.getGroup(groupId);
-      }),
-      catchError((error) => {
-        if (error instanceof HttpErrorResponse && error.status === 404) {
-          this._router.navigate(['/routes']);
-          return of(null);
-        } else {
-          throw error;
-        }
-      })
-    );
+    this._route.data.subscribe((data: any) => {
+      this.group = data.group as Group;
+    });
   }
 }
