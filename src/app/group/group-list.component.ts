@@ -13,12 +13,12 @@
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { GroupDialogService } from './group-dialog.component';
-import { Group, GroupService } from './group.service';
+import { Group } from './group.service';
 import { firstValueFrom } from 'rxjs';
 import { DataList } from '../shared/data';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 
 @Component({
   selector: 'app-group-list',
@@ -31,9 +31,9 @@ import { ActivatedRoute } from '@angular/router';
     </div>
     <mat-divider></mat-divider>
     <mat-nav-list class="list-container" *ngIf="groups">
-      <mat-list-item class="active">Item 1</mat-list-item>
       <mat-list-item
         *ngFor="let group of groups.items"
+        [class.active]="group.id === activeGroup?.id"
         [routerLink]="['/groups', group.id]"
       >
         {{ group.name }}
@@ -49,7 +49,7 @@ import { ActivatedRoute } from '@angular/router';
   ],
 })
 export class GroupListComponent {
-  // TODO: Use SelectionModel to select a single group
+  public activeGroup?: Group;
   public groups = new DataList<Group>();
 
   constructor(
@@ -58,6 +58,7 @@ export class GroupListComponent {
   ) {
     route.data.subscribe((data: any) => {
       this.groups.items = data.groups as Group[];
+      this.activeGroup = data.group as Group;
     });
   }
 
