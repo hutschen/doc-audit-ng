@@ -34,7 +34,7 @@ import { ActivatedRoute } from '@angular/router';
       <mat-list-item class="active">Item 1</mat-list-item>
       <mat-list-item
         *ngFor="let group of groups.items"
-        [routerLink]="['groups', group.id]"
+        [routerLink]="['/groups', group.id]"
       >
         {{ group.name }}
       </mat-list-item>
