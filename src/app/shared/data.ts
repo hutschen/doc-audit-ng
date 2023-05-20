@@ -13,6 +13,9 @@
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+import { Observable, Subscription } from 'rxjs';
+import { Interaction } from './interaction';
+
 export interface IDataItem {
   id: number;
 }
@@ -36,5 +39,21 @@ export class DataList<D extends IDataItem> {
     if (index > -1) {
       this.items.splice(index, 1);
     }
+  }
+
+  syncInteractions(interactions$: Observable<Interaction<D>>): Subscription {
+    return interactions$.subscribe((interaction) => {
+      switch (interaction.action) {
+        case 'create':
+          this.addItem(interaction.item);
+          break;
+        case 'update':
+          this.updateItem(interaction.item);
+          break;
+        case 'delete':
+          this.removeItem(interaction.item);
+          break;
+      }
+    });
   }
 }
