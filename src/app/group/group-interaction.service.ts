@@ -16,7 +16,14 @@
 import { Injectable } from '@angular/core';
 import { Interaction, InteractionService } from '../shared/interaction';
 import { Group, GroupService } from './group.service';
-import { Subject, firstValueFrom } from 'rxjs';
+import {
+  Observable,
+  Subject,
+  filter,
+  firstValueFrom,
+  map,
+  startWith,
+} from 'rxjs';
 import { GroupDialogService } from './group-dialog.component';
 import { ConfirmDialogService } from '../shared/components/confirm-dialog.component';
 
@@ -32,6 +39,14 @@ export class GroupInteractionService implements InteractionService<Group> {
     protected _groupDialogService: GroupDialogService,
     protected _confirmDialogService: ConfirmDialogService
   ) {}
+
+  syncGroup(group: Group): Observable<Group> {
+    return this.interactions$.pipe(
+      filter((interaction) => interaction.item.id === group.id),
+      map((interaction) => interaction.item),
+      startWith(group)
+    );
+  }
 
   protected async _createOrEditGroup(group?: Group): Promise<void> {
     const dialogRef = this._groupDialogService.openGroupDialog(group);
