@@ -13,18 +13,18 @@
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-import { Component } from '@angular/core';
-import { GroupDialogService } from './group-dialog.component';
+import { Component, OnDestroy } from '@angular/core';
 import { Group } from './group.service';
-import { firstValueFrom } from 'rxjs';
+import { Subscription, tap } from 'rxjs';
 import { DataList } from '../shared/data';
 import { ActivatedRoute, Router } from '@angular/router';
+import { GroupInteractionService } from './group-interaction.service';
 
 @Component({
   selector: 'app-group-list',
   template: `
     <div class="button-container">
-      <button mat-stroked-button (click)="onCreateGroup()">
+      <button mat-stroked-button (click)="groupInteractions.onCreateGroup()">
         <mat-icon>add</mat-icon>
         New Group
       </button>
@@ -48,19 +48,30 @@ import { ActivatedRoute, Router } from '@angular/router';
     '.active {background-color: rgba(0, 0, 0, 0.20);}',
   ],
 })
-export class GroupListComponent {
+export class GroupListComponent implements OnDestroy {
   public activeGroup?: Group;
   public groups = new DataList<Group>();
+  protected _groupInteractionsSubscription: Subscription;
 
   constructor(
     route: ActivatedRoute,
     protected _router: Router,
-    protected _groupDialogService: GroupDialogService
+    readonly groupInteractions: GroupInteractionService
   ) {
     route.data.subscribe((data: any) => {
       this.groups.items = data.groups as Group[];
       this.activeGroup = data.group as Group;
     });
+
+    this._groupInteractionsSubscription = this.groups.syncInteractions(
+      this.groupInteractions.interactions$.pipe(
+        tap((interaction) => {
+          if (interaction.action === 'create') {
+            this._router.navigate(['/groups', interaction.item.id]);
+          }
+        })
+      )
+    );
   }
 
   get reversedGroups(): Group[] {
@@ -68,23 +79,7 @@ export class GroupListComponent {
     return this.groups.items.slice().reverse();
   }
 
-  protected async _createOrEditGroup(group?: Group): Promise<void> {
-    const dialogRef = this._groupDialogService.openGroupDialog(group);
-    const resultingGroup = await firstValueFrom(dialogRef.afterClosed());
-    if (resultingGroup) {
-      if (group) this.groups.updateItem(resultingGroup);
-      else {
-        this.groups.addItem(resultingGroup);
-        this._router.navigate(['/groups', resultingGroup.id]);
-      }
-    }
-  }
-
-  async onCreateGroup(): Promise<void> {
-    await this._createOrEditGroup();
-  }
-
-  async onEditGroup(group: Group): Promise<void> {
-    await this._createOrEditGroup(group);
+  ngOnDestroy(): void {
+    this._groupInteractionsSubscription.unsubscribe();
   }
 }
