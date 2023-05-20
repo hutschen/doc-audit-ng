@@ -15,6 +15,12 @@
 
 import { Injectable } from '@angular/core';
 import { Group, IGroup } from '../group/group.service';
+import {
+  CRUDService,
+  IPage,
+  IQueryParams,
+} from '../shared/services/crud.service';
+import { Observable, map } from 'rxjs';
 
 type Language = 'de' | 'en';
 
@@ -53,5 +59,38 @@ export class Document implements IDocument {
   providedIn: 'root',
 })
 export class DocumentService {
-  constructor() {}
+  constructor(protected _crud: CRUDService<IDocumentInput, IDocument>) {}
+
+  queryDocuments(params: IQueryParams = {}) {
+    return this._crud.query('documents', params).pipe(
+      map((documents) => {
+        if (Array.isArray(documents)) {
+          return documents.map((document) => new Document(document));
+        } else {
+          return {
+            ...documents,
+            items: documents.items.map((document) => new Document(document)),
+          } as IPage<Document>;
+        }
+      })
+    );
+  }
+
+  // TODO: Implement file upload before implementing createDocument
+
+  getDocument(documentId: number): Observable<Document> {
+    return this._crud
+      .read(`documents/${documentId}`)
+      .pipe(map((document) => new Document(document)));
+  }
+
+  updateDocument(document: Document): Observable<Document> {
+    return this._crud
+      .update(`documents/${document.id}`, document.toDocumentInput())
+      .pipe(map((document) => new Document(document)));
+  }
+
+  deleteDocument(documentId: number): Observable<null> {
+    return this._crud.delete(`documents/${documentId}`);
+  }
 }
