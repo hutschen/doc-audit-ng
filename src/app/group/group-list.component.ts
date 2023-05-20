@@ -18,6 +18,7 @@ import { GroupDialogService } from './group-dialog.component';
 import { Group, GroupService } from './group.service';
 import { firstValueFrom } from 'rxjs';
 import { DataList } from '../shared/data';
+import { ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'app-group-list',
@@ -47,19 +48,17 @@ import { DataList } from '../shared/data';
     '.active {background-color: rgba(0, 0, 0, 0.20);}',
   ],
 })
-export class GroupListComponent implements OnInit {
+export class GroupListComponent {
   // TODO: Use SelectionModel to select a single group
-  public groups!: DataList<Group>;
+  public groups = new DataList<Group>();
 
   constructor(
-    protected _groupDialogService: GroupDialogService,
-    protected _groupService: GroupService
-  ) {}
-
-  ngOnInit(): void {
-    this._groupService
-      .queryGroups()
-      .subscribe((groups) => (this.groups = new DataList(groups as Group[])));
+    route: ActivatedRoute,
+    protected _groupDialogService: GroupDialogService
+  ) {
+    route.data.subscribe((data: any) => {
+      this.groups.items = data.groups as Group[];
+    });
   }
 
   protected async _createOrEditGroup(group?: Group): Promise<void> {

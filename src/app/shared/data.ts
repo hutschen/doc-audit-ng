@@ -18,7 +18,7 @@ export interface IDataItem {
 }
 
 export class DataList<D extends IDataItem> {
-  constructor(readonly items: D[] = []) {}
+  constructor(public items: D[] = []) {}
 
   addItem(item: D): void {
     this.items.push(item);
