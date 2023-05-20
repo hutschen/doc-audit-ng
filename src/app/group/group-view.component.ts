@@ -17,7 +17,38 @@ import { Component } from '@angular/core';
 
 @Component({
   selector: 'app-group-view',
-  template: ` <p>group-view works!</p> `,
-  styles: [],
+  template: `
+    <div class="header fx-row">
+      <div class="header-content fx-row fx-gap-10">
+        <button class="icon-button" mat-stroked-button matTooltip="Edit Group">
+          <mat-icon class="no-margin">edit</mat-icon>
+        </button>
+        <button
+          class="icon-button"
+          mat-stroked-button
+          matTooltip="Delete Group"
+        >
+          <mat-icon class="no-margin">delete</mat-icon>
+        </button>
+      </div>
+      <mat-divider vertical></mat-divider>
+      <div class="header-content">
+        <button mat-flat-button color="accent">
+          <mat-icon>bolt</mat-icon>
+          Query
+        </button>
+      </div>
+    </div>
+    <mat-divider></mat-divider>
+    <div class="content">
+      <p>group-view works!</p>
+    </div>
+  `,
+  styleUrls: ['../shared/styles/flex.scss', '../shared/styles/truncate.scss'],
+  styles: [
+    '.header-content { padding: 16px; box-sizing: border-box; }',
+    '.no-margin { margin: 0; }',
+    '.icon-button { min-width: 0px; }',
+  ],
 })
 export class GroupViewComponent {}
