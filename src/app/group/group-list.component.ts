@@ -68,6 +68,8 @@ export class GroupListComponent implements OnDestroy {
         tap((interaction) => {
           if (interaction.action === 'create') {
             this._router.navigate(['/groups', interaction.item.id]);
+          } else if (interaction.action === 'delete') {
+            this._router.navigate(['/groups']);
           }
         })
       )

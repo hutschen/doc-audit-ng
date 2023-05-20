@@ -13,22 +13,30 @@
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-import { Component } from '@angular/core';
-import { Group, GroupService } from '../group/group.service';
+import { Component, OnDestroy } from '@angular/core';
+import { Group } from '../group/group.service';
 import { ActivatedRoute } from '@angular/router';
+import { GroupInteractionService } from '../group/group-interaction.service';
+import { Subscription, map, switchMap } from 'rxjs';
 
 @Component({
   selector: 'app-document-list',
   template: `
     <div class="header fx-row">
       <div class="header-content fx-row fx-gap-10">
-        <button class="icon-button" mat-stroked-button matTooltip="Edit Group">
+        <button
+          class="icon-button"
+          mat-stroked-button
+          matTooltip="Edit Group"
+          (click)="groupInteractions.onEditGroup(group)"
+        >
           <mat-icon class="no-margin">edit</mat-icon>
         </button>
         <button
           class="icon-button"
           mat-stroked-button
           matTooltip="Delete Group"
+          (click)="groupInteractions.onDeleteGroup(group)"
         >
           <mat-icon class="no-margin">delete</mat-icon>
         </button>
@@ -53,15 +61,23 @@ import { ActivatedRoute } from '@angular/router';
     '.icon-button { min-width: 0px; }',
   ],
 })
-export class DocumentListComponent {
+export class DocumentListComponent implements OnDestroy {
   group!: Group;
+  protected _routeDataSubscription: Subscription;
 
   constructor(
     protected _route: ActivatedRoute,
-    protected _groupService: GroupService
+    readonly groupInteractions: GroupInteractionService
   ) {
-    this._route.data.subscribe((data: any) => {
-      this.group = data.group as Group;
-    });
+    this._routeDataSubscription = this._route.data
+      .pipe(
+        map((data: any) => data.group as Group),
+        switchMap((group: Group) => this.groupInteractions.syncGroup(group))
+      )
+      .subscribe((group) => (this.group = group));
+  }
+
+  ngOnDestroy(): void {
+    this._routeDataSubscription.unsubscribe();
   }
 }
