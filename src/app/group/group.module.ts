@@ -27,6 +27,10 @@ const routes: Routes = [
     path: 'groups',
     component: GroupViewComponent,
   },
+  {
+    path: 'groups/:groupId',
+    component: GroupViewComponent,
+  },
 ];
 
 @NgModule({

@@ -31,7 +31,10 @@ import { DataList } from '../shared/data';
     <mat-divider></mat-divider>
     <mat-nav-list class="list-container" *ngIf="groups">
       <mat-list-item class="active">Item 1</mat-list-item>
-      <mat-list-item *ngFor="let group of groups.items">
+      <mat-list-item
+        *ngFor="let group of groups.items"
+        [routerLink]="['groups', group.id]"
+      >
         {{ group.name }}
       </mat-list-item>
     </mat-nav-list>
