@@ -15,7 +15,7 @@
 
 import { Component, OnInit } from '@angular/core';
 import { GroupDialogService } from './group-dialog.component';
-import { Group, GroupService } from '../shared/services/group.service';
+import { Group, GroupService } from './group.service';
 import { firstValueFrom } from 'rxjs';
 import { DataList } from '../shared/data';
 

@@ -15,7 +15,7 @@
 
 import { Component } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { Group, GroupService } from '../shared/services/group.service';
+import { Group, GroupService } from './group.service';
 import { Observable, catchError, map, of, switchMap } from 'rxjs';
 import { toInt } from 'radash';
 import { HttpErrorResponse } from '@angular/common/http';

@@ -19,11 +19,7 @@ import {
   MatDialog,
   MatDialogRef,
 } from '@angular/material/dialog';
-import {
-  Group,
-  GroupService,
-  IGroupInput,
-} from '../shared/services/group.service';
+import { Group, GroupService, IGroupInput } from './group.service';
 import { NgForm } from '@angular/forms';
 import { Observable } from 'rxjs';
 
