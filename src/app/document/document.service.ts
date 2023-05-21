@@ -21,6 +21,7 @@ import {
   IQueryParams,
 } from '../shared/services/crud.service';
 import { Observable, map } from 'rxjs';
+import { UploadService } from '../shared/services/upload.service';
 
 type Language = 'de' | 'en';
 
@@ -59,7 +60,10 @@ export class Document implements IDocument {
   providedIn: 'root',
 })
 export class DocumentService {
-  constructor(protected _crud: CRUDService<IDocumentInput, IDocument>) {}
+  constructor(
+    protected _crud: CRUDService<IDocumentInput, IDocument>,
+    protected _upload: UploadService
+  ) {}
 
   queryDocuments(params: IQueryParams = {}) {
     return this._crud.query('documents', params).pipe(
@@ -76,7 +80,12 @@ export class DocumentService {
     );
   }
 
-  // TODO: Implement file upload before implementing createDocument
+  createDocument(groupId: number, documentInput: IDocumentInput, file: File) {
+    return this._upload.upload<IDocument>(`groups/${groupId}/documents`, file, {
+      title: documentInput.title,
+      language: documentInput.language,
+    });
+  }
 
   getDocument(documentId: number): Observable<Document> {
     return this._crud
