@@ -51,6 +51,7 @@ import { Subscription, map, switchMap } from 'rxjs';
     </div>
     <mat-divider></mat-divider>
     <div class="content">
+      <app-create-document></app-create-document>
       <p>document-list works!</p>
     </div>
   `,

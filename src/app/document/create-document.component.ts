@@ -17,7 +17,25 @@ import { Component } from '@angular/core';
 
 @Component({
   selector: 'app-create-document',
-  template: ` <p>create-document works!</p> `,
+  template: `
+    <div class="fx-row fx-gap-10">
+      <mat-form-field class="fx-grow">
+        <mat-label>Document title</mat-label>
+        <input matInput placeholder="Enter document title" />
+      </mat-form-field>
+
+      <mat-form-field class="fx-no-grow">
+        <mat-label>Language</mat-label>
+        <mat-select>
+          <mat-option value="de">German</mat-option>
+          <mat-option value="en">English</mat-option>
+        </mat-select>
+      </mat-form-field>
+
+      <button mat-stroked-button class="fx-no-grow">Create</button>
+    </div>
+  `,
+  styleUrls: ['../shared/styles/flex.scss'],
   styles: [],
 })
 export class CreateDocumentComponent {}
