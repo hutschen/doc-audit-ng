@@ -12,10 +12,17 @@
 //
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
-
 import { Component } from '@angular/core';
 import { NgForm } from '@angular/forms';
+import { ErrorStateMatcher } from '@angular/material/core';
 import { IDocumentInput, Language } from './document.service';
+
+/** Error when invalid control is dirty, touched, or submitted. */
+class CustomErrorStateMatcher implements ErrorStateMatcher {
+  isErrorState(): boolean {
+    return false;
+  }
+}
 
 @Component({
   selector: 'app-create-document',
@@ -29,6 +36,7 @@ import { IDocumentInput, Language } from './document.service';
         <mat-label>Document title</mat-label>
         <input
           matInput
+          [errorStateMatcher]="errorStateMatcher"
           name="title"
           [(ngModel)]="documentTitle"
           placeholder="Enter document title"
@@ -38,7 +46,12 @@ import { IDocumentInput, Language } from './document.service';
 
       <mat-form-field class="fx-no-grow">
         <mat-label>Language</mat-label>
-        <mat-select name="language" [(ngModel)]="documentLanguage" required>
+        <mat-select
+          name="language"
+          [(ngModel)]="documentLanguage"
+          [errorStateMatcher]="errorStateMatcher"
+          required
+        >
           <mat-option value="de">German</mat-option>
           <mat-option value="en">English</mat-option>
         </mat-select>
@@ -65,6 +78,7 @@ import { IDocumentInput, Language } from './document.service';
 export class CreateDocumentComponent {
   documentTitle = '';
   documentLanguage: Language = 'de';
+  errorStateMatcher = new CustomErrorStateMatcher();
 
   onSubmit(form: NgForm) {
     const documentInput: IDocumentInput = {
