@@ -56,7 +56,7 @@ import { DocumentInteractionService } from './document-interaction.service';
     <div class="content">
       <app-create-document></app-create-document>
       <div>
-        <mat-divider></mat-divider>
+        <mat-divider *ngIf="reversedDocuments.length"></mat-divider>
         <div *ngFor="let document of reversedDocuments">
           <div class="fx-row fx-gap-10 fx-center-center list-item">
             <div class="fx-grow truncate list-item-title">
