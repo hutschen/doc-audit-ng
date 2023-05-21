@@ -15,7 +15,7 @@
 
 import { Component, OnDestroy } from '@angular/core';
 import { Group } from './group.service';
-import { Subject, Subscription, takeUntil, tap } from 'rxjs';
+import { Subject, takeUntil, tap } from 'rxjs';
 import { DataList } from '../shared/data';
 import { ActivatedRoute, Router } from '@angular/router';
 import { GroupInteractionService } from './group-interaction.service';
