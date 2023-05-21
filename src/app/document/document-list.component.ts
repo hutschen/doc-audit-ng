@@ -13,7 +13,7 @@
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-import { Component, OnDestroy } from '@angular/core';
+import { Component, OnDestroy, Query } from '@angular/core';
 import { Group } from '../group/group.service';
 import { ActivatedRoute } from '@angular/router';
 import { GroupInteractionService } from '../group/group-interaction.service';
@@ -21,6 +21,7 @@ import { Subject, map, switchMap, takeUntil } from 'rxjs';
 import { DataList } from '../shared/data';
 import { Document } from './document.service';
 import { DocumentInteractionService } from './document-interaction.service';
+import { QueryDialogService } from '../query/query-dialog.component';
 
 @Component({
   selector: 'app-document-list',
@@ -46,7 +47,11 @@ import { DocumentInteractionService } from './document-interaction.service';
       </div>
       <mat-divider vertical></mat-divider>
       <div class="header-content">
-        <button mat-flat-button color="accent">
+        <button
+          mat-flat-button
+          color="accent"
+          (click)="queryDialogService.openQueryDialog(group)"
+        >
           <mat-icon>bolt</mat-icon>
           Query
         </button>
@@ -100,7 +105,8 @@ export class DocumentListComponent implements OnDestroy {
   constructor(
     route: ActivatedRoute,
     readonly groupInteractions: GroupInteractionService,
-    readonly documentInteractions: DocumentInteractionService
+    readonly documentInteractions: DocumentInteractionService,
+    readonly queryDialogService: QueryDialogService
   ) {
     // Get group from route data
     route.data

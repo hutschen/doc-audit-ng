@@ -33,7 +33,7 @@ export class QueryDialogService {
 
 @Component({
   selector: 'app-query-dialog',
-  template: ` <p>query-dialog works!</p> `,
+  template: ` <div mat-dialog-content></div> `,
   styles: [],
 })
 export class QueryDialogComponent {}
