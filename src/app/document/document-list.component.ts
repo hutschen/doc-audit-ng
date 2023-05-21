@@ -62,7 +62,11 @@ import { DocumentInteractionService } from './document-interaction.service';
             <div class="fx-grow truncate list-item-title">
               {{ document.title }}
             </div>
-            <button mat-stroked-button class="fx-no-grow icon-button">
+            <button
+              mat-stroked-button
+              class="fx-no-grow icon-button"
+              (click)="documentInteractions.onEditDocument(document)"
+            >
               <mat-icon class="no-margin">edit</mat-icon>
             </button>
             <button
