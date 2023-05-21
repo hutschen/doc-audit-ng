@@ -54,11 +54,30 @@ import { Document } from './document.service';
     <mat-divider></mat-divider>
     <div class="content">
       <app-create-document></app-create-document>
-      <p>document-list works!</p>
+      <div>
+        <mat-divider></mat-divider>
+        <div *ngFor="let document of reversedDocuments">
+          <div class="fx-row fx-gap-10 fx-center-center list-item">
+            <div class="fx-grow truncate list-item-title">
+              {{ document.title }}
+            </div>
+            <button mat-stroked-button class="fx-no-grow icon-button">
+              <mat-icon class="no-margin">edit</mat-icon>
+            </button>
+            <button mat-stroked-button class="fx-no-grow icon-button">
+              <mat-icon class="no-margin">delete</mat-icon>
+            </button>
+          </div>
+          <mat-divider></mat-divider>
+        </div>
+      </div>
     </div>
   `,
   styleUrls: ['../shared/styles/flex.scss', '../shared/styles/truncate.scss'],
   styles: [
+    '.list-item-title { font-size: 16px; }',
+    '.list-item { padding: 16px; padding-right: 0px; box-sizing: border-box; }',
+    '.content { padding: 16px; box-sizing: border-box; }',
     '.header-content { padding: 16px; box-sizing: border-box; }',
     '.no-margin { margin: 0; }',
     '.icon-button { min-width: 0px; }',
@@ -89,6 +108,11 @@ export class DocumentListComponent implements OnDestroy {
         map((data: any) => data.documents)
       )
       .subscribe((documents) => (this.documents.items = documents));
+  }
+
+  get reversedDocuments(): Document[] {
+    // To display the documents in reverse order (newest first)
+    return this.documents.items.slice().reverse();
   }
 
   ngOnDestroy(): void {
