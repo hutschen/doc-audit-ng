@@ -77,7 +77,7 @@ export class QueryDialogService {
       </div>
 
       <div mat-dialog-content class="results">
-        <div *ngIf="results">
+        <div *ngIf="results" class="fx-column fx-gap-15">
           <app-query-result
             *ngFor="let result of results"
             [queryResult]="result"

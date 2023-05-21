@@ -19,29 +19,33 @@ import { QueryResult } from './query.service';
 @Component({
   selector: 'app-query-result',
   template: `
-    <div class="query-result fx-column fx-gap-10">
-      <div class="fx-row fx-align-center fx-gap-10">
+    <mat-card appearance="outlined">
+      <mat-card-header>
+        <mat-card-title>{{ queryResult.document.title }}</mat-card-title>
+        <mat-card-subtitle>
+          <div class="breadcrumb fx-row fx-wrap fx-gap-5">
+            <span *ngFor="let header of queryResult.headers">{{ header }}</span>
+          </div>
+        </mat-card-subtitle>
+      </mat-card-header>
+
+      <mat-card-content>
+        <div class="content">{{ queryResult.content }}</div>
+      </mat-card-content>
+      <mat-card-footer>
         <mat-progress-bar
-          class="fx-grow"
           [value]="scorePercentage"
           matTooltip="{{ scorePercentage }}%"
+          color="accent"
         ></mat-progress-bar>
-        <h3>{{ queryResult.document.title }}</h3>
-      </div>
-
-      <div class="breadcrumb fx-row fx-wrap fx-gap-5">
-        <span *ngFor="let header of queryResult.headers">{{ header }}</span>
-      </div>
-
-      <div class="content">
-        {{ queryResult.content }}
-      </div>
-    </div>
+      </mat-card-footer>
+    </mat-card>
   `,
+  styleUrls: ['../shared/styles/truncate.scss'],
   styles: [
     '.query-result { width: 100%; }',
     '.breadcrumb span:not(:last-child)::after { content: "/"; margin: 0 0.5em; }',
-    '.content { background-color: #f5f5f5; white-space: pre-wrap; padding: 1em; }',
+    '.content { white-space: pre-wrap; padding: 1em; }',
   ],
 })
 export class QueryResultComponent {
