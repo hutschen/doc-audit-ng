@@ -14,32 +14,45 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 import { Component } from '@angular/core';
+import { IDocumentInput } from './document.service';
 
 @Component({
   selector: 'app-create-document',
   template: `
-    <div class="fx-row fx-gap-10">
+    <form #docForm="ngForm" class="fx-row fx-gap-10">
       <mat-form-field class="fx-grow">
         <mat-label>Document title</mat-label>
-        <input matInput placeholder="Enter document title" />
+        <input
+          matInput
+          name="title"
+          [(ngModel)]="documentInput.title"
+          placeholder="Enter document title"
+          required
+        />
       </mat-form-field>
 
       <mat-form-field class="fx-no-grow">
         <mat-label>Language</mat-label>
-        <mat-select>
+        <mat-select
+          name="language"
+          [(ngModel)]="documentInput.language"
+          required
+        >
           <mat-option value="de">German</mat-option>
           <mat-option value="en">English</mat-option>
         </mat-select>
       </mat-form-field>
 
       <button
-        mat-stroked-button
+        mat-flat-button
         class="fx-no-grow square-button"
         matTooltip="Create Document"
+        color="accent"
+        [disabled]="!docForm.valid"
       >
         <mat-icon class="no-margin">add</mat-icon>
       </button>
-    </div>
+    </form>
   `,
   styleUrls: ['../shared/styles/flex.scss'],
   styles: [
@@ -47,4 +60,9 @@ import { Component } from '@angular/core';
     '.no-margin { margin: 0; }',
   ],
 })
-export class CreateDocumentComponent {}
+export class CreateDocumentComponent {
+  readonly documentInput: IDocumentInput = {
+    title: '',
+    language: 'de',
+  };
+}
