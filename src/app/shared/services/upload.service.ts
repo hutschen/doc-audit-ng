@@ -19,9 +19,10 @@ import { Observable, scan } from 'rxjs';
 import { environment } from 'src/environments/environment';
 import { IQueryParams } from './crud.service';
 
-export interface IUploadState {
+export interface IUploadState<T = any> {
   state: 'pending' | 'in_progress' | 'done';
   progress: number;
+  result?: T;
 }
 
 @Injectable({
@@ -35,10 +36,10 @@ export class UploadService {
     return `${environment.baseUrl}/${relativeUrl}`;
   }
 
-  protected _caculateState(
-    previousState: IUploadState,
-    event: HttpEvent<unknown>
-  ): IUploadState {
+  protected _caculateState<T>(
+    previousState: IUploadState<T>,
+    event: HttpEvent<any>
+  ): IUploadState<T> {
     switch (event.type) {
       case HttpEventType.UploadProgress:
         return {
@@ -49,21 +50,23 @@ export class UploadService {
             : previousState.progress,
         };
       case HttpEventType.Response:
+        // get the response body
         return {
           ...previousState,
           state: 'done',
+          result: event.body,
         };
       default:
         return previousState;
     }
   }
 
-  upload(
+  upload<T>(
     relativeUrl: string,
     file: File,
     params: IQueryParams = {}
-  ): Observable<IUploadState> {
-    const initialState: IUploadState = {
+  ): Observable<IUploadState<T>> {
+    const initialState: IUploadState<T> = {
       state: 'pending',
       progress: 0,
     };
@@ -76,6 +79,8 @@ export class UploadService {
         params: params,
         reportProgress: true,
       })
-      .pipe(scan(this._caculateState, initialState));
+      .pipe(
+        scan((prev, event) => this._caculateState<T>(prev, event), initialState)
+      );
   }
 }
