@@ -93,9 +93,12 @@ export class DocumentService {
       .pipe(map((document) => new Document(document)));
   }
 
-  updateDocument(document: Document): Observable<Document> {
+  updateDocument(
+    documentId: number,
+    documentInput: IDocumentInput
+  ): Observable<Document> {
     return this._crud
-      .update(`documents/${document.id}`, document.toDocumentInput())
+      .update(`documents/${documentId}`, documentInput)
       .pipe(map((document) => new Document(document)));
   }
 
