@@ -32,10 +32,19 @@ import { Component } from '@angular/core';
         </mat-select>
       </mat-form-field>
 
-      <button mat-stroked-button class="fx-no-grow">Create</button>
+      <button
+        mat-stroked-button
+        class="fx-no-grow square-button"
+        matTooltip="Create Document"
+      >
+        <mat-icon class="no-margin">add</mat-icon>
+      </button>
     </div>
   `,
   styleUrls: ['../shared/styles/flex.scss'],
-  styles: [],
+  styles: [
+    '.square-button { width: 56px; height: 56px; }',
+    '.no-margin { margin: 0; }',
+  ],
 })
 export class CreateDocumentComponent {}
