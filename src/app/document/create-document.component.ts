@@ -12,10 +12,14 @@
 //
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
-import { Component } from '@angular/core';
+import { Component, OnDestroy } from '@angular/core';
 import { NgForm } from '@angular/forms';
 import { ErrorStateMatcher } from '@angular/material/core';
 import { IDocumentInput, Language } from './document.service';
+import { ActivatedRoute } from '@angular/router';
+import { Group } from '../group/group.service';
+import { Subject, map, takeUntil } from 'rxjs';
+import { DocumentInteractionService } from './document-interaction.service';
 
 /** Error when invalid control is dirty, touched, or submitted. */
 class CustomErrorStateMatcher implements ErrorStateMatcher {
@@ -75,17 +79,41 @@ class CustomErrorStateMatcher implements ErrorStateMatcher {
     '.no-margin { margin: 0; }',
   ],
 })
-export class CreateDocumentComponent {
+export class CreateDocumentComponent implements OnDestroy {
+  group!: Group;
   documentTitle = '';
   documentLanguage: Language = 'de';
   errorStateMatcher = new CustomErrorStateMatcher();
+  protected _unsubscribeAll = new Subject<void>();
 
-  onSubmit(form: NgForm) {
+  constructor(
+    route: ActivatedRoute,
+    protected _documentInteractions: DocumentInteractionService
+  ) {
+    route.data
+      .pipe(
+        takeUntil(this._unsubscribeAll),
+        map((data: any) => data.group as Group)
+      )
+      .subscribe((group) => {
+        this.group = group;
+      });
+  }
+
+  async onSubmit(form: NgForm) {
     const documentInput: IDocumentInput = {
       title: this.documentTitle,
       language: this.documentLanguage,
     };
+    await this._documentInteractions.onCreateDocument(
+      this.group,
+      documentInput
+    );
     form.resetForm({ language: 'de' });
-    // TODO: Use Upload dialog to upload document
+  }
+
+  ngOnDestroy(): void {
+    this._unsubscribeAll.next();
+    this._unsubscribeAll.complete();
   }
 }
