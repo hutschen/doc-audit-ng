@@ -13,8 +13,12 @@
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-import { Component, Injectable } from '@angular/core';
-import { MatDialog, MatDialogRef } from '@angular/material/dialog';
+import { Component, Injectable, Inject } from '@angular/core';
+import {
+  MatDialog,
+  MatDialogRef,
+  MAT_DIALOG_DATA,
+} from '@angular/material/dialog';
 import { Group } from '../group/group.service';
 
 @Injectable({
@@ -33,7 +37,51 @@ export class QueryDialogService {
 
 @Component({
   selector: 'app-query-dialog',
-  template: ` <div mat-dialog-content></div> `,
-  styles: [],
+  template: `
+    <div mat-dialog-content class="fx-column">
+      <mat-form-field class="">
+        <textarea
+          matInput
+          [(ngModel)]="query"
+          placeholder="Write a sentence, paragraph you want to find in the documents. The search is based on the meaning of your input - not on keywords. Your input can be written in English or German."
+          cdkTextareaAutosize="true"
+          cdkAutosizeMinRows="3"
+        ></textarea>
+      </mat-form-field>
+
+      <div class="fx-row fx-gap-10 fx-end">
+        <mat-form-field>
+          <mat-label>Results</mat-label>
+          <mat-select [(ngModel)]="resultsCount" name="resultsCount">
+            <mat-option [value]="5">5</mat-option>
+            <mat-option [value]="10">10</mat-option>
+            <mat-option [value]="25">25</mat-option>
+          </mat-select>
+        </mat-form-field>
+        <button
+          mat-flat-button
+          color="accent"
+          [disabled]="!query"
+          class="query-button"
+        >
+          <mat-icon>bolt</mat-icon>
+          Run Query
+        </button>
+      </div>
+    </div>
+  `,
+  styleUrls: ['../shared/styles/flex.scss'],
+  styles: [
+    '.query-button { height: 56px; }',
+    '.fx-end { justify-content: flex-end; }',
+  ],
 })
-export class QueryDialogComponent {}
+export class QueryDialogComponent {
+  query: string = '';
+  resultsCount: number = 5;
+
+  constructor(
+    public dialogRef: MatDialogRef<QueryDialogComponent>,
+    @Inject(MAT_DIALOG_DATA) public group: Group
+  ) {}
+}
