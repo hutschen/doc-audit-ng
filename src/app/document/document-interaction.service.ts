@@ -25,6 +25,7 @@ import { Group } from '../group/group.service';
 import { Subject, firstValueFrom } from 'rxjs';
 import { Interaction, InteractionService } from '../shared/interaction';
 import { ConfirmDialogService } from '../shared/components/confirm-dialog.component';
+import { DocumentDialogService } from './document-dialog.component';
 
 @Injectable({
   providedIn: 'root',
@@ -38,6 +39,7 @@ export class DocumentInteractionService
   constructor(
     protected _documentService: DocumentService,
     protected _uploadDialogService: UploadDialogService,
+    protected _documentDialogService: DocumentDialogService,
     protected _confirmDialogService: ConfirmDialogService
   ) {}
 
@@ -59,6 +61,17 @@ export class DocumentInteractionService
       this._interactionSubject.next({
         item: new Document(uploadState.result as IDocument),
         action: 'create',
+      });
+    }
+  }
+
+  async onEditDocument(document: Document): Promise<void> {
+    const dialogRef = this._documentDialogService.openDocumentDialog(document);
+    const resultingDocument = await firstValueFrom(dialogRef.afterClosed());
+    if (resultingDocument) {
+      this._interactionSubject.next({
+        item: resultingDocument,
+        action: 'update',
       });
     }
   }
