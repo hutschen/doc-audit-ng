@@ -24,6 +24,7 @@ import {
 import { Group } from '../group/group.service';
 import { Subject, firstValueFrom } from 'rxjs';
 import { Interaction, InteractionService } from '../shared/interaction';
+import { ConfirmDialogService } from '../shared/components/confirm-dialog.component';
 
 @Injectable({
   providedIn: 'root',
@@ -36,7 +37,8 @@ export class DocumentInteractionService
 
   constructor(
     protected _documentService: DocumentService,
-    protected _uploadDialogService: UploadDialogService
+    protected _uploadDialogService: UploadDialogService,
+    protected _confirmDialogService: ConfirmDialogService
   ) {}
 
   async onCreateDocument(
@@ -58,6 +60,18 @@ export class DocumentInteractionService
         item: new Document(uploadState.result as IDocument),
         action: 'create',
       });
+    }
+  }
+
+  async onDeleteDocument(document: Document): Promise<void> {
+    const confirmDialogRef = this._confirmDialogService.openConfirmDialog(
+      'Delete Document',
+      `Do you really want to delete document "${document.title}"?`
+    );
+    const confirmed = await firstValueFrom(confirmDialogRef.afterClosed());
+    if (confirmed) {
+      await firstValueFrom(this._documentService.deleteDocument(document.id));
+      this._interactionSubject.next({ item: document, action: 'delete' });
     }
   }
 }
