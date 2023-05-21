@@ -20,6 +20,7 @@ import { GroupInteractionService } from '../group/group-interaction.service';
 import { Subject, map, switchMap, takeUntil } from 'rxjs';
 import { DataList } from '../shared/data';
 import { Document } from './document.service';
+import { DocumentInteractionService } from './document-interaction.service';
 
 @Component({
   selector: 'app-document-list',
@@ -90,7 +91,8 @@ export class DocumentListComponent implements OnDestroy {
 
   constructor(
     route: ActivatedRoute,
-    readonly groupInteractions: GroupInteractionService
+    readonly groupInteractions: GroupInteractionService,
+    readonly documentInteractions: DocumentInteractionService
   ) {
     // Get group from route data
     route.data
@@ -108,6 +110,12 @@ export class DocumentListComponent implements OnDestroy {
         map((data: any) => data.documents)
       )
       .subscribe((documents) => (this.documents.items = documents));
+
+    this.documents.syncInteractions(
+      this.documentInteractions.interactions$.pipe(
+        takeUntil(this._unsubscribeAll)
+      )
+    );
   }
 
   get reversedDocuments(): Document[] {
