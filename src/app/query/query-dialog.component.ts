@@ -78,7 +78,10 @@ export class QueryDialogService {
 
       <div mat-dialog-content class="results">
         <div *ngIf="results">
-          <pre *ngFor="let result of results">{{ result | json }}</pre>
+          <app-query-result
+            *ngFor="let result of results"
+            [queryResult]="result"
+          ></app-query-result>
           <div></div>
         </div>
       </div>

@@ -18,9 +18,10 @@ import { CommonModule } from '@angular/common';
 import { QueryDialogComponent } from './query-dialog.component';
 import { MaterialModule } from '../material/material.module';
 import { SharedModule } from '../shared/shared.module';
+import { QueryResultComponent } from './query-result.component';
 
 @NgModule({
-  declarations: [QueryDialogComponent],
+  declarations: [QueryDialogComponent, QueryResultComponent],
   imports: [CommonModule, MaterialModule, SharedModule],
 })
 export class QueryModule {}
