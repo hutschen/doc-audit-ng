@@ -23,7 +23,7 @@ import {
 import { Observable, map } from 'rxjs';
 import { UploadService } from '../shared/services/upload.service';
 
-type Language = 'de' | 'en';
+export type Language = 'de' | 'en';
 
 export interface IDocumentInput {
   title: string;

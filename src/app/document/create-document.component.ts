@@ -14,18 +14,23 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 import { Component } from '@angular/core';
-import { IDocumentInput } from './document.service';
+import { NgForm } from '@angular/forms';
+import { IDocumentInput, Language } from './document.service';
 
 @Component({
   selector: 'app-create-document',
   template: `
-    <form #docForm="ngForm" class="fx-row fx-gap-10">
+    <form
+      #docForm="ngForm"
+      (ngSubmit)="onSubmit(docForm)"
+      class="fx-row fx-gap-10"
+    >
       <mat-form-field class="fx-grow">
         <mat-label>Document title</mat-label>
         <input
           matInput
           name="title"
-          [(ngModel)]="documentInput.title"
+          [(ngModel)]="documentTitle"
           placeholder="Enter document title"
           required
         />
@@ -33,17 +38,14 @@ import { IDocumentInput } from './document.service';
 
       <mat-form-field class="fx-no-grow">
         <mat-label>Language</mat-label>
-        <mat-select
-          name="language"
-          [(ngModel)]="documentInput.language"
-          required
-        >
+        <mat-select name="language" [(ngModel)]="documentLanguage" required>
           <mat-option value="de">German</mat-option>
           <mat-option value="en">English</mat-option>
         </mat-select>
       </mat-form-field>
 
       <button
+        type="submit"
         mat-flat-button
         class="fx-no-grow square-button"
         matTooltip="Create Document"
@@ -61,8 +63,15 @@ import { IDocumentInput } from './document.service';
   ],
 })
 export class CreateDocumentComponent {
-  readonly documentInput: IDocumentInput = {
-    title: '',
-    language: 'de',
-  };
+  documentTitle = '';
+  documentLanguage: Language = 'de';
+
+  onSubmit(form: NgForm) {
+    const documentInput: IDocumentInput = {
+      title: this.documentTitle,
+      language: this.documentLanguage,
+    };
+    form.resetForm({ language: 'de' });
+    // TODO: Use Upload dialog to upload document
+  }
 }
