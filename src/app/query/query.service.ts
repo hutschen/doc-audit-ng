@@ -47,5 +47,24 @@ export class QueryResult implements IQueryResult {
   providedIn: 'root',
 })
 export class QueryService {
-  constructor() {}
+  constructor(protected _crud: CRUDService<null, IQueryResult>) {}
+
+  queryResults(groupId: number, content: string, topK: number) {
+    const params: IQueryParams = {
+      content,
+      top_k: topK,
+    };
+    return this._crud.query(`groups/${groupId}/query`, params).pipe(
+      map((queryResults) => {
+        if (Array.isArray(queryResults)) {
+          return queryResults.map((result) => new QueryResult(result));
+        } else {
+          return {
+            ...queryResults,
+            items: queryResults.items.map((result) => new QueryResult(result)),
+          } as IPage<QueryResult>;
+        }
+      })
+    );
+  }
 }
