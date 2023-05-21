@@ -15,7 +15,7 @@
 
 import { Component, OnDestroy } from '@angular/core';
 import { Group } from './group.service';
-import { Subscription, tap } from 'rxjs';
+import { Subject, Subscription, takeUntil, tap } from 'rxjs';
 import { DataList } from '../shared/data';
 import { ActivatedRoute, Router } from '@angular/router';
 import { GroupInteractionService } from './group-interaction.service';
@@ -51,20 +51,21 @@ import { GroupInteractionService } from './group-interaction.service';
 export class GroupListComponent implements OnDestroy {
   public activeGroup?: Group;
   public groups = new DataList<Group>();
-  protected _groupInteractionsSubscription: Subscription;
+  private _unsubscribeAll = new Subject<void>();
 
   constructor(
     route: ActivatedRoute,
     protected _router: Router,
     readonly groupInteractions: GroupInteractionService
   ) {
-    route.data.subscribe((data: any) => {
+    route.data.pipe(takeUntil(this._unsubscribeAll)).subscribe((data: any) => {
       this.groups.items = data.groups as Group[];
       this.activeGroup = data.group as Group;
     });
 
-    this._groupInteractionsSubscription = this.groups.syncInteractions(
+    this.groups.syncInteractions(
       this.groupInteractions.interactions$.pipe(
+        takeUntil(this._unsubscribeAll),
         tap((interaction) => {
           if (interaction.action === 'create') {
             this._router.navigate(['/groups', interaction.item.id]);
@@ -82,6 +83,7 @@ export class GroupListComponent implements OnDestroy {
   }
 
   ngOnDestroy(): void {
-    this._groupInteractionsSubscription.unsubscribe();
+    this._unsubscribeAll.next();
+    this._unsubscribeAll.complete();
   }
 }
