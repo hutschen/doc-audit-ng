@@ -66,22 +66,22 @@ export class UploadDialogService {
       <!-- Progress bar -->
       <div *ngIf="uploadState">
         <strong>
-          <p *ngIf="uploadState.state == 'pending'">Preparing upload</p>
-          <p *ngIf="uploadState.state != 'pending'">
+          <p *ngIf="progressState === 'buffer'">Preparing upload</p>
+          <p *ngIf="progressState === 'determinate'">
             {{ uploadState.progress }}% complete
           </p>
+          <p *ngIf="progressState === 'indeterminate'">Processing file</p>
         </strong>
-        <mat-progress-bar
-          [mode]="uploadState.state == 'pending' ? 'buffer' : 'determinate'"
-          [value]="uploadState.progress"
-        >
+        <mat-progress-bar [mode]="progressState" [value]="uploadState.progress">
         </mat-progress-bar>
       </div>
     </div>
 
     <!-- Actions -->
     <div mat-dialog-actions mat-dialog-actions align="end">
-      <button mat-button (click)="onClose()">Cancel</button>
+      <button mat-button (click)="onClose()" [disabled]="uploadState">
+        Cancel
+      </button>
       <button
         mat-raised-button
         [disabled]="uploadState || !file"
@@ -100,6 +100,17 @@ export class UploadDialogComponent {
   file: File | null = null;
   uploadState: IUploadState | null = null;
   protected _callback: (file: File) => Observable<IUploadState>;
+
+  get progressState(): 'buffer' | 'determinate' | 'indeterminate' {
+    if (this.uploadState) {
+      if (this.uploadState.progress === 100) {
+        return 'indeterminate';
+      } else if (0 < this.uploadState.progress) {
+        return 'determinate';
+      }
+    }
+    return 'buffer';
+  }
 
   constructor(
     protected _dialogRef: MatDialogRef<UploadDialogComponent>,
