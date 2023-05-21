@@ -15,14 +15,25 @@
 
 import { Injectable } from '@angular/core';
 import { UploadDialogService } from '../shared/components/upload-dialog.component';
-import { DocumentService, IDocumentInput } from './document.service';
+import {
+  DocumentService,
+  IDocumentInput,
+  IDocument,
+  Document,
+} from './document.service';
 import { Group } from '../group/group.service';
-import { firstValueFrom } from 'rxjs';
+import { Subject, firstValueFrom } from 'rxjs';
+import { Interaction, InteractionService } from '../shared/interaction';
 
 @Injectable({
   providedIn: 'root',
 })
-export class DocumentInteractionService {
+export class DocumentInteractionService
+  implements InteractionService<Document>
+{
+  protected _interactionSubject = new Subject<Interaction<Document>>();
+  readonly interactions$ = this._interactionSubject.asObservable();
+
   constructor(
     protected _documentService: DocumentService,
     protected _uploadDialogService: UploadDialogService
@@ -43,7 +54,10 @@ export class DocumentInteractionService {
     );
     const uploadState = await firstValueFrom(dialogRef.afterClosed());
     if (uploadState && uploadState.state === 'done') {
-      // TODO: get result from uploadState and emit interaction
+      this._interactionSubject.next({
+        item: new Document(uploadState.result as IDocument),
+        action: 'create',
+      });
     }
   }
 }
