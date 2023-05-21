@@ -14,6 +14,34 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 import { Injectable } from '@angular/core';
+import { IDocument, Document } from '../document/document.service';
+import {
+  CRUDService,
+  IPage,
+  IQueryParams,
+} from '../shared/services/crud.service';
+import { map } from 'rxjs';
+
+export interface IQueryResult {
+  score: number;
+  content: string;
+  headers: string[];
+  document: IDocument;
+}
+
+export class QueryResult implements IQueryResult {
+  score: number;
+  content: string;
+  headers: string[];
+  document: Document;
+
+  constructor(queryResult: IQueryResult) {
+    this.score = queryResult.score;
+    this.content = queryResult.content;
+    this.headers = queryResult.headers;
+    this.document = new Document(queryResult.document);
+  }
+}
 
 @Injectable({
   providedIn: 'root',
