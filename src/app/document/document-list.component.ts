@@ -65,7 +65,11 @@ import { DocumentInteractionService } from './document-interaction.service';
             <button mat-stroked-button class="fx-no-grow icon-button">
               <mat-icon class="no-margin">edit</mat-icon>
             </button>
-            <button mat-stroked-button class="fx-no-grow icon-button">
+            <button
+              mat-stroked-button
+              class="fx-no-grow icon-button"
+              (click)="documentInteractions.onDeleteDocument(document)"
+            >
               <mat-icon class="no-margin">delete</mat-icon>
             </button>
           </div>
