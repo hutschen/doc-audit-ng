@@ -39,8 +39,8 @@ export class QueryDialogService {
 @Component({
   selector: 'app-query-dialog',
   template: `
-    <div mat-dialog-content class="fx-column">
-      <mat-form-field class="">
+    <div mat-dialog-title class="fx-column">
+      <mat-form-field>
         <textarea
           matInput
           [(ngModel)]="query"
@@ -51,6 +51,11 @@ export class QueryDialogService {
       </mat-form-field>
 
       <div class="fx-row fx-gap-10 fx-end">
+        <button mat-button mat-dialog-close class="close-button">
+          <mat-icon>arrow_back</mat-icon>
+          Back
+        </button>
+        <div class="fx-grow"></div>
         <mat-form-field>
           <mat-label>Results</mat-label>
           <mat-select [(ngModel)]="resultsCount" name="resultsCount">
@@ -71,7 +76,7 @@ export class QueryDialogService {
         </button>
       </div>
 
-      <div class="results">
+      <div mat-dialog-content class="results">
         <div *ngIf="results">
           <pre *ngFor="let result of results">{{ result | json }}</pre>
           <div></div>
@@ -81,7 +86,8 @@ export class QueryDialogService {
   `,
   styleUrls: ['../shared/styles/flex.scss'],
   styles: [
-    '.query-button { height: 56px; }',
+    '.query-button { height: 56px; min-width: 150px; }',
+    '.close-button { height: 56px; min-width: 100px; }',
     '.fx-end { justify-content: flex-end; }',
   ],
 })
