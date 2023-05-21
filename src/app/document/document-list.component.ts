@@ -17,7 +17,9 @@ import { Component, OnDestroy } from '@angular/core';
 import { Group } from '../group/group.service';
 import { ActivatedRoute } from '@angular/router';
 import { GroupInteractionService } from '../group/group-interaction.service';
-import { Subject, Subscription, map, switchMap, takeUntil } from 'rxjs';
+import { Subject, map, switchMap, takeUntil } from 'rxjs';
+import { DataList } from '../shared/data';
+import { Document } from './document.service';
 
 @Component({
   selector: 'app-document-list',
@@ -63,20 +65,30 @@ import { Subject, Subscription, map, switchMap, takeUntil } from 'rxjs';
   ],
 })
 export class DocumentListComponent implements OnDestroy {
-  group!: Group;
+  public group!: Group;
+  public documents = new DataList<Document>();
   protected _unsubscribeAll = new Subject<void>();
 
   constructor(
-    protected _route: ActivatedRoute,
+    route: ActivatedRoute,
     readonly groupInteractions: GroupInteractionService
   ) {
-    this._route.data
+    // Get group from route data
+    route.data
       .pipe(
         takeUntil(this._unsubscribeAll),
         map((data: any) => data.group as Group),
         switchMap((group: Group) => this.groupInteractions.syncGroup(group))
       )
       .subscribe((group) => (this.group = group));
+
+    // Get documents from route data
+    route.data
+      .pipe(
+        takeUntil(this._unsubscribeAll),
+        map((data: any) => data.documents)
+      )
+      .subscribe((documents) => (this.documents.items = documents));
   }
 
   ngOnDestroy(): void {
