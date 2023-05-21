@@ -82,7 +82,7 @@ import { DocumentInteractionService } from './document-interaction.service';
   styles: [
     '.list-item-title { font-size: 16px; }',
     '.list-item { padding: 16px; padding-right: 0px; box-sizing: border-box; }',
-    '.content { padding: 16px; box-sizing: border-box; }',
+    '.content { overflow-y: auto; height: calc(100vh - 133px); padding: 16px; box-sizing: border-box; }',
     '.header-content { padding: 16px; box-sizing: border-box; }',
     '.no-margin { margin: 0; }',
     '.icon-button { min-width: 0px; }',
