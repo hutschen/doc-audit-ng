@@ -14,10 +14,36 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 import { Injectable } from '@angular/core';
+import { UploadDialogService } from '../shared/components/upload-dialog.component';
+import { DocumentService, IDocumentInput } from './document.service';
+import { Group } from '../group/group.service';
+import { firstValueFrom } from 'rxjs';
 
 @Injectable({
   providedIn: 'root',
 })
 export class DocumentInteractionService {
-  constructor() {}
+  constructor(
+    protected _documentService: DocumentService,
+    protected _uploadDialogService: UploadDialogService
+  ) {}
+
+  async onCreateDocument(
+    group: Group,
+    documentInput: IDocumentInput
+  ): Promise<void> {
+    const dialogRef = this._uploadDialogService.openUploadDialog(
+      (file: File) => {
+        return this._documentService.createDocument(
+          group.id,
+          documentInput,
+          file
+        );
+      }
+    );
+    const uploadState = await firstValueFrom(dialogRef.afterClosed());
+    if (uploadState && uploadState.state === 'done') {
+      // TODO: get result from uploadState and emit interaction
+    }
+  }
 }
