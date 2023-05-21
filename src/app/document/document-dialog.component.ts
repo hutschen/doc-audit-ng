@@ -13,11 +13,84 @@
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-import { Component } from '@angular/core';
+import { Component, Inject, Injectable } from '@angular/core';
+import {
+  MAT_DIALOG_DATA,
+  MatDialog,
+  MatDialogRef,
+} from '@angular/material/dialog';
+import {
+  Document,
+  DocumentService,
+  IDocument,
+  IDocumentInput,
+} from './document.service';
+import { NgForm } from '@angular/forms';
+import { Observable } from 'rxjs';
+
+@Injectable({
+  providedIn: 'root',
+})
+export class DocumentDialogService {
+  constructor(protected _dialog: MatDialog) {}
+
+  openDocumentDialog(
+    document: Document
+  ): MatDialogRef<DocumentDialogComponent, Document> {
+    return this._dialog.open(DocumentDialogComponent, {
+      width: '500px',
+      data: document,
+    });
+  }
+}
 
 @Component({
   selector: 'app-document-dialog',
-  template: ` <p>document-dialog works!</p> `,
+  template: `
+    <app-create-edit-dialog
+      [createMode]="false"
+      objectName="Document"
+      (save)="onSave($event)"
+      (cancel)="onCancel()"
+    >
+      <div class="fx-column">
+        <mat-form-field appearance="fill">
+          <mat-label>Document title</mat-label>
+          <input
+            name="name"
+            matInput
+            [(ngModel)]="documentInput.title"
+            required
+          />
+        </mat-form-field>
+      </div>
+    </app-create-edit-dialog>
+  `,
+  styleUrls: ['../shared/styles/flex.scss'],
   styles: [],
 })
-export class DocumentDialogComponent {}
+export class DocumentDialogComponent {
+  documentInput!: IDocumentInput;
+
+  constructor(
+    protected _dialogRef: MatDialogRef<DocumentDialogComponent>,
+    protected _documentService: DocumentService,
+    @Inject(MAT_DIALOG_DATA) protected _document: Document
+  ) {
+    this.documentInput = this._document.toDocumentInput();
+  }
+
+  onSave(form: NgForm): void {
+    if (form.valid) {
+      const document$ = this._documentService.updateDocument(
+        this._document.id,
+        this.documentInput
+      );
+      document$.subscribe((document) => this._dialogRef.close(document));
+    }
+  }
+
+  onCancel(): void {
+    this._dialogRef.close();
+  }
+}

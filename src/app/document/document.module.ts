@@ -5,10 +5,15 @@ import { DocumentListComponent } from './document-list.component';
 import { MaterialModule } from '../material/material.module';
 import { CreateDocumentComponent } from './create-document.component';
 import { DocumentDialogComponent } from './document-dialog.component';
+import { SharedModule } from '../shared/shared.module';
 
 @NgModule({
-  declarations: [DocumentListComponent, CreateDocumentComponent, DocumentDialogComponent],
-  imports: [CommonModule, MaterialModule],
+  declarations: [
+    CreateDocumentComponent,
+    DocumentDialogComponent,
+    DocumentListComponent,
+  ],
+  imports: [CommonModule, MaterialModule, SharedModule],
   exports: [DocumentListComponent],
 })
 export class DocumentModule {}
