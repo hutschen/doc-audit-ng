@@ -67,10 +67,13 @@ export class GroupListComponent implements OnDestroy {
       this.groupInteractions.interactions$.pipe(
         takeUntil(this._unsubscribeAll),
         tap((interaction) => {
-          if (interaction.action === 'create') {
-            this._router.navigate(['/groups', interaction.item.id]);
-          } else if (interaction.action === 'delete') {
-            this._router.navigate(['/groups']);
+          switch (interaction.action) {
+            case 'create':
+              this._router.navigate(['/groups', interaction.item.id]);
+              break;
+            case 'delete':
+              this._router.navigate(['/groups']);
+              break;
           }
         })
       )
