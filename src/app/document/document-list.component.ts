@@ -17,7 +17,10 @@ import { Component, OnDestroy } from '@angular/core';
 import { Group } from '../group/group.service';
 import { ActivatedRoute } from '@angular/router';
 import { GroupInteractionService } from '../group/group-interaction.service';
-import { Subscription, map, switchMap } from 'rxjs';
+import { Subject, map, switchMap, takeUntil } from 'rxjs';
+import { DataList } from '../shared/data';
+import { Document } from './document.service';
+import { DocumentInteractionService } from './document-interaction.service';
 
 @Component({
   selector: 'app-document-list',
@@ -51,33 +54,85 @@ import { Subscription, map, switchMap } from 'rxjs';
     </div>
     <mat-divider></mat-divider>
     <div class="content">
-      <p>document-list works!</p>
+      <app-create-document></app-create-document>
+      <div>
+        <mat-divider *ngIf="reversedDocuments.length"></mat-divider>
+        <div *ngFor="let document of reversedDocuments">
+          <div class="fx-row fx-gap-10 fx-center-center list-item">
+            <div class="fx-grow truncate list-item-title">
+              {{ document.title }}
+            </div>
+            <button
+              mat-stroked-button
+              class="fx-no-grow icon-button"
+              (click)="documentInteractions.onEditDocument(document)"
+            >
+              <mat-icon class="no-margin">edit</mat-icon>
+            </button>
+            <button
+              mat-stroked-button
+              class="fx-no-grow icon-button"
+              (click)="documentInteractions.onDeleteDocument(document)"
+            >
+              <mat-icon class="no-margin">delete</mat-icon>
+            </button>
+          </div>
+          <mat-divider></mat-divider>
+        </div>
+      </div>
     </div>
   `,
   styleUrls: ['../shared/styles/flex.scss', '../shared/styles/truncate.scss'],
   styles: [
+    '.list-item-title { font-size: 16px; }',
+    '.list-item { padding: 16px; padding-right: 0px; box-sizing: border-box; }',
+    '.content { overflow-y: auto; height: calc(100vh - 133px); padding: 16px; box-sizing: border-box; }',
     '.header-content { padding: 16px; box-sizing: border-box; }',
     '.no-margin { margin: 0; }',
     '.icon-button { min-width: 0px; }',
   ],
 })
 export class DocumentListComponent implements OnDestroy {
-  group!: Group;
-  protected _routeDataSubscription: Subscription;
+  public group!: Group;
+  public documents = new DataList<Document>();
+  protected _unsubscribeAll = new Subject<void>();
 
   constructor(
-    protected _route: ActivatedRoute,
-    readonly groupInteractions: GroupInteractionService
+    route: ActivatedRoute,
+    readonly groupInteractions: GroupInteractionService,
+    readonly documentInteractions: DocumentInteractionService
   ) {
-    this._routeDataSubscription = this._route.data
+    // Get group from route data
+    route.data
       .pipe(
+        takeUntil(this._unsubscribeAll),
         map((data: any) => data.group as Group),
         switchMap((group: Group) => this.groupInteractions.syncGroup(group))
       )
       .subscribe((group) => (this.group = group));
+
+    // Get documents from route data
+    route.data
+      .pipe(
+        takeUntil(this._unsubscribeAll),
+        map((data: any) => data.documents)
+      )
+      .subscribe((documents) => (this.documents.items = documents));
+
+    this.documents.syncInteractions(
+      this.documentInteractions.interactions$.pipe(
+        takeUntil(this._unsubscribeAll)
+      )
+    );
+  }
+
+  get reversedDocuments(): Document[] {
+    // To display the documents in reverse order (newest first)
+    return this.documents.items.slice().reverse();
   }
 
   ngOnDestroy(): void {
-    this._routeDataSubscription.unsubscribe();
+    this._unsubscribeAll.next();
+    this._unsubscribeAll.complete();
   }
 }

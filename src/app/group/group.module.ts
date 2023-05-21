@@ -23,6 +23,7 @@ import { GroupViewComponent } from './group-view.component';
 import { RouterModule, Routes } from '@angular/router';
 import { GroupResolver, GroupsResolver } from './group-resolver.service';
 import { DocumentModule } from '../document/document.module';
+import { DocumentsResolver } from '../document/document-resolver.service';
 
 const routes: Routes = [
   {
@@ -32,7 +33,11 @@ const routes: Routes = [
   },
   {
     path: 'groups/:groupId',
-    resolve: { groups: GroupsResolver, group: GroupResolver },
+    resolve: {
+      groups: GroupsResolver,
+      group: GroupResolver,
+      documents: DocumentsResolver,
+    },
     component: GroupViewComponent,
   },
 ];
