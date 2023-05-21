@@ -20,6 +20,7 @@ import {
   MAT_DIALOG_DATA,
 } from '@angular/material/dialog';
 import { Group } from '../group/group.service';
+import { QueryResult, QueryService } from './query.service';
 
 @Injectable({
   providedIn: 'root',
@@ -63,10 +64,18 @@ export class QueryDialogService {
           color="accent"
           [disabled]="!query"
           class="query-button"
+          (click)="onQuery()"
         >
           <mat-icon>bolt</mat-icon>
           Run Query
         </button>
+      </div>
+
+      <div class="results">
+        <div *ngIf="results">
+          <pre *ngFor="let result of results">{{ result | json }}</pre>
+          <div></div>
+        </div>
       </div>
     </div>
   `,
@@ -79,9 +88,21 @@ export class QueryDialogService {
 export class QueryDialogComponent {
   query: string = '';
   resultsCount: number = 5;
+  results: QueryResult[] = [];
 
   constructor(
     public dialogRef: MatDialogRef<QueryDialogComponent>,
-    @Inject(MAT_DIALOG_DATA) public group: Group
-  ) {}
+    @Inject(MAT_DIALOG_DATA) public group: Group,
+    protected _queryService: QueryService
+  ) {
+    console.log('group', group);
+  }
+
+  onQuery() {
+    this._queryService
+      .queryResults(this.group.id, this.query, this.resultsCount)
+      .subscribe((data) => {
+        this.results = data as QueryResult[];
+      });
+  }
 }
