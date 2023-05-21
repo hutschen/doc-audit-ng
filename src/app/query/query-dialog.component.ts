@@ -13,7 +13,23 @@
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-import { Component } from '@angular/core';
+import { Component, Injectable } from '@angular/core';
+import { MatDialog, MatDialogRef } from '@angular/material/dialog';
+import { Group } from '../group/group.service';
+
+@Injectable({
+  providedIn: 'root',
+})
+export class QueryDialogService {
+  constructor(protected _dialog: MatDialog) {}
+
+  openQueryDialog(group: Group): MatDialogRef<QueryDialogComponent> {
+    return this._dialog.open(QueryDialogComponent, {
+      width: '80%',
+      data: group,
+    });
+  }
+}
 
 @Component({
   selector: 'app-query-dialog',
