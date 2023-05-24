@@ -20,12 +20,14 @@ import { MaterialModule } from '../material/material.module';
 import { HttpClientModule } from '@angular/common/http';
 import { ConfirmDialogComponent } from './components/confirm-dialog.component';
 import { UploadDialogComponent } from './components/upload-dialog.component';
+import { ErrorDialogComponent } from './components/error-dialog.component';
 
 @NgModule({
   declarations: [
     ConfirmDialogComponent,
     CreateEditDialogComponent,
     UploadDialogComponent,
+    ErrorDialogComponent,
   ],
   imports: [CommonModule, MaterialModule, HttpClientModule],
   exports: [CreateEditDialogComponent, HttpClientModule],
