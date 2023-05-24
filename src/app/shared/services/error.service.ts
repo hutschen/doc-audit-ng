@@ -14,7 +14,11 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 import { HttpErrorResponse } from '@angular/common/http';
-import { Injectable } from '@angular/core';
+import { ErrorHandler, Injectable, Injector, NgZone } from '@angular/core';
+import { MatDialog, MatDialogRef } from '@angular/material/dialog';
+import { ErrorDialogComponent } from '../components/error-dialog.component';
+import { Subject } from 'rxjs';
+import { Router } from '@angular/router';
 
 export class ErrorReport {
   code?: number;
@@ -35,6 +39,37 @@ export class ErrorReport {
 @Injectable({
   providedIn: 'root',
 })
-export class ErrorService {
-  constructor() {}
+export class ErrorService implements ErrorHandler {
+  protected _dialogRef?: MatDialogRef<ErrorDialogComponent>;
+  protected _errorReportsSubject = new Subject<any>();
+  protected _errorReports$ = this._errorReportsSubject.asObservable();
+
+  constructor(protected _injector: Injector) {}
+
+  openErrorDialog(error: any): void {
+    // open dialog when it is not already open
+    if (!this._dialogRef) {
+      const dialog = this._injector.get(MatDialog);
+      this._dialogRef = dialog.open(ErrorDialogComponent, {
+        width: '500px',
+        data: this._errorReports$,
+      });
+      this._dialogRef.afterClosed().subscribe(() => {
+        this._dialogRef = undefined;
+      });
+    }
+
+    // push error to error subject to report it
+    this._errorReportsSubject.next(new ErrorReport(error));
+  }
+
+  handleError(error: any): void {
+    error = error.rejection || error;
+    if (error instanceof HttpErrorResponse) {
+      const ngZone = this._injector.get(NgZone);
+      ngZone.run(() => this.openErrorDialog(error));
+    } else {
+      console.error('Unhandled error', error);
+    }
+  }
 }
