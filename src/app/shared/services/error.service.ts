@@ -13,7 +13,24 @@
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+import { HttpErrorResponse } from '@angular/common/http';
 import { Injectable } from '@angular/core';
+
+export class ErrorReport {
+  code?: number;
+  title?: string;
+  detail: string;
+
+  constructor(public error: any) {
+    if (this.error instanceof HttpErrorResponse) {
+      this.code = this.error.status;
+      this.title = this.error.statusText;
+      this.detail = this.error.error.detail || 'Unknown error';
+    } else {
+      this.detail = this.error.message || 'Unknown error';
+    }
+  }
+}
 
 @Injectable({
   providedIn: 'root',
