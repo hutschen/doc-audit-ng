@@ -13,7 +13,7 @@
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-import { NgModule } from '@angular/core';
+import { ErrorHandler, NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 
 import { AppComponent } from './app.component';
@@ -21,6 +21,7 @@ import { ToolbarComponent } from './toolbar.component';
 import { MaterialModule } from './material/material.module';
 import { GroupModule } from './group/group.module';
 import { RouterModule, Routes } from '@angular/router';
+import { ErrorService } from './shared/services/error.service';
 
 const routes: Routes = [{ path: '**', redirectTo: 'groups' }];
 
@@ -32,7 +33,7 @@ const routes: Routes = [{ path: '**', redirectTo: 'groups' }];
     MaterialModule,
     RouterModule.forRoot(routes),
   ],
-  providers: [],
+  providers: [{ provide: ErrorHandler, useClass: ErrorService }],
   bootstrap: [AppComponent],
 })
 export class AppModule {}
