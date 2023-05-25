@@ -1,27 +1,19 @@
-# Docaudit
+# DocAudit
 
-This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 15.2.0.
+DocAudit is a tool for reviewing documents in the field of information security. When reviewing the documentation of an ISMS (Information Security Management System), it is often necessary to review a large amount of documents. DocAudit supports information security experts in their document work by enabling a semantic search across multiple documents. In this way, passages of text relating to information security measures can be found more quickly than is the case when documents are searched manually.
 
-## Development server
+## Installation
 
-Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The application will automatically reload if you change any of the source files.
+DocAudit consists of two components, the [web API](https://github.com/hutschen/doc-audit-api) and the web client. This repository contains the web client. For installation in a production environment, deployment using Docker is recommended. You can find the appropriate Docker image on [Docker Hub](https://hub.docker.com/r/hutschen/doc-audit) or you can build by using the Dockerfile, which you can find in [a separate repository](https://github.com/hutschen/doc-audit-docker).
 
-## Code scaffolding
+## Contributing
 
-Run `ng generate component component-name` to generate a new component. You can also use `ng generate directive|pipe|service|class|guard|interface|enum|module`.
+The goal of DocAudit is to provide its users with the greatest possible benefit in their daily work in information security. For this reason, feedback from the field and suggestions for improvement are particularly important.
 
-## Build
+If you want to contribute something like this, feel free to create an issue with a feature request, an idea for improvement or a bug report. Issues can be created in English and German.
 
-Run `ng build` to build the project. The build artifacts will be stored in the `dist/` directory.
+This project is just started. Later there will be more possibilities to contribute. For now please be patient. Thanks :relaxed:
 
-## Running unit tests
+## License and dependencies
 
-Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.io).
-
-## Running end-to-end tests
-
-Run `ng e2e` to execute the end-to-end tests via a platform of your choice. To use this command, you need to first add a package that implements end-to-end testing capabilities.
-
-## Further help
-
-To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI Overview and Command Reference](https://angular.io/cli) page.
+The DocAudit itself or the source code in this repository is licensed under AGPLv3. You find the license in the [license file](LICENSE). In addition, DocAudit uses a number of libraries to make it work. These libraries have been released by their respective authors under their own licenses. These libraries or their source code is not part of this repository.
