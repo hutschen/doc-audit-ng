@@ -103,9 +103,7 @@ export class QueryDialogComponent {
     public dialogRef: MatDialogRef<QueryDialogComponent>,
     @Inject(MAT_DIALOG_DATA) public group: Group,
     protected _queryService: QueryService
-  ) {
-    console.log('group', group);
-  }
+  ) {}
 
   onQuery() {
     this._queryService
