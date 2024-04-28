@@ -15,7 +15,7 @@
 
 import { Injectable } from '@angular/core';
 import { Document, DocumentService } from './document.service';
-import { ActivatedRouteSnapshot, Resolve, Router } from '@angular/router';
+import { ActivatedRouteSnapshot, Router } from '@angular/router';
 import { EMPTY, Observable, catchError, map } from 'rxjs';
 import { toInt } from 'radash';
 import { HttpErrorResponse } from '@angular/common/http';
@@ -24,7 +24,7 @@ import { HttpErrorResponse } from '@angular/common/http';
 @Injectable({
   providedIn: 'root',
 })
-export class DocumentsResolver implements Resolve<Document[]> {
+export class DocumentsResolver  {
   protected _errorRoute = ['/groups'];
 
   constructor(
