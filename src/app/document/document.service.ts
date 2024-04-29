@@ -31,12 +31,12 @@ export interface IDocumentInput {
 }
 
 export interface IDocument extends IDocumentInput {
-  id: number;
+  id: string;
   group: IGroup;
 }
 
 export class Document implements IDocument {
-  id: number;
+  id: string;
   title: string;
   language: Language;
   group: Group;
@@ -87,14 +87,14 @@ export class DocumentService {
     });
   }
 
-  getDocument(documentId: number): Observable<Document> {
+  getDocument(documentId: string): Observable<Document> {
     return this._crud
       .read(`documents/${documentId}`)
       .pipe(map((document) => new Document(document)));
   }
 
   updateDocument(
-    documentId: number,
+    documentId: string,
     documentInput: IDocumentInput
   ): Observable<Document> {
     return this._crud
@@ -102,7 +102,7 @@ export class DocumentService {
       .pipe(map((document) => new Document(document)));
   }
 
-  deleteDocument(documentId: number): Observable<null> {
+  deleteDocument(documentId: string): Observable<null> {
     return this._crud.delete(`documents/${documentId}`);
   }
 }

@@ -17,7 +17,7 @@ import { Observable, Subscription } from 'rxjs';
 import { Interaction } from './interaction';
 
 export interface IDataItem {
-  id: number;
+  id: number | string;
 }
 
 export class DataList<D extends IDataItem> {
