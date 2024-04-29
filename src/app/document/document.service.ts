@@ -15,13 +15,11 @@
 
 import { Injectable } from '@angular/core';
 import { Group, IGroup } from '../group/group.service';
-import {
-  CRUDService,
-  IPage,
-  IQueryParams,
-} from '../shared/services/crud.service';
-import { Observable, map } from 'rxjs';
-import { UploadService } from '../shared/services/upload.service';
+import { CRUDService } from '../shared/services/crud.service';
+import { Observable, concatMap, from, map, of } from 'rxjs';
+import { IUploadState, UploadService } from '../shared/services/upload.service';
+import { DatabaseService } from '../shared/services/database.service';
+import { SourceService } from '../source/source.service';
 
 export type Language = 'de' | 'en';
 
@@ -65,48 +63,69 @@ export class Document implements IDocument {
 })
 export class DocumentService {
   constructor(
+    protected _database: DatabaseService,
+    protected _sources: SourceService,
     protected _crud: CRUDService<IDocumentInput, IDocument>,
     protected _upload: UploadService
   ) {}
 
-  queryDocuments(params: IQueryParams = {}) {
-    return this._crud.query('documents', params).pipe(
-      map((documents) => {
-        if (Array.isArray(documents)) {
-          return documents.map((document) => new Document(document));
+  queryDocuments(groupId: number): Observable<Document[]> {
+    return from(this._database.listDocuments(groupId)).pipe(
+      map((entries) => {
+        return entries.map(
+          (entry) => new Document({ language: 'de', ...entry } as IDocument)
+        );
+      })
+    );
+  }
+
+  createDocument(documentInput: IDocumentInput, file: File) {
+    return this._sources.uploadSource(file).pipe(
+      concatMap((uploadState) => {
+        if (uploadState.state === 'done') {
+          return from(
+            this._database.addDocument({
+              ...documentInput,
+              id: uploadState.result!.id,
+            })
+          ).pipe(
+            map((entry) => ({ ...entry, language: 'de' } as IDocument)),
+            map(
+              (document) =>
+                ({
+                  ...uploadState,
+                  result: document,
+                } as IUploadState<IDocument>)
+            )
+          );
         } else {
-          return {
-            ...documents,
-            items: documents.items.map((document) => new Document(document)),
-          } as IPage<Document>;
+          return of({
+            ...uploadState,
+            result: undefined,
+          } as IUploadState<IDocument>);
         }
       })
     );
   }
 
-  createDocument(groupId: number, documentInput: IDocumentInput, file: File) {
-    return this._upload.upload<IDocument>(`groups/${groupId}/documents`, file, {
-      title: documentInput.title,
-      language: documentInput.language,
-    });
-  }
-
   getDocument(documentId: string): Observable<Document> {
-    return this._crud
-      .read(`documents/${documentId}`)
-      .pipe(map((document) => new Document(document)));
+    return from(this._database.getDocument(documentId)).pipe(
+      map((entry) => new Document({ language: 'de', ...entry } as IDocument))
+    );
   }
 
   updateDocument(
     documentId: string,
     documentInput: IDocumentInput
   ): Observable<Document> {
-    return this._crud
-      .update(`documents/${documentId}`, documentInput)
-      .pipe(map((document) => new Document(document)));
+    return from(
+      this._database.updateDocument({ id: documentId, ...documentInput })
+    ).pipe(
+      map((entry) => new Document({ language: 'de', ...entry } as IDocument))
+    );
   }
 
-  deleteDocument(documentId: string): Observable<null> {
-    return this._crud.delete(`documents/${documentId}`);
+  deleteDocument(documentId: string): Observable<void> {
+    return from(this._database.deleteDocument(documentId));
   }
 }

@@ -24,7 +24,7 @@ import { HttpErrorResponse } from '@angular/common/http';
 @Injectable({
   providedIn: 'root',
 })
-export class DocumentsResolver  {
+export class DocumentsResolver {
   protected _errorRoute = ['/groups'];
 
   constructor(
@@ -39,7 +39,7 @@ export class DocumentsResolver  {
       return EMPTY;
     }
 
-    return this._documentService.queryDocuments({ group_ids: groupId }).pipe(
+    return this._documentService.queryDocuments(groupId).pipe(
       map((documents) => documents as Document[]),
       catchError((error) => {
         if (error instanceof HttpErrorResponse && error.status === 404) {
