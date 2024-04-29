@@ -14,12 +14,8 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 import { Injectable } from '@angular/core';
-import {
-  CRUDService,
-  IPage,
-  IQueryParams,
-} from '../shared/services/crud.service';
-import { Observable, map } from 'rxjs';
+import { Observable, from, map } from 'rxjs';
+import { DatabaseService } from '../shared/services/database.service';
 
 export interface IGroupInput {
   name: string;
@@ -49,42 +45,35 @@ export class Group implements IGroup {
   providedIn: 'root',
 })
 export class GroupService {
-  constructor(protected _crud: CRUDService<IGroupInput, IGroup>) {}
+  constructor(private _database: DatabaseService) {}
 
-  queryGroups(params: IQueryParams = {}) {
-    return this._crud.query('groups', params).pipe(
-      map((groups) => {
-        if (Array.isArray(groups)) {
-          return groups.map((group) => new Group(group));
-        } else {
-          return {
-            ...groups,
-            items: groups.items.map((group) => new Group(group)),
-          } as IPage<Group>;
-        }
+  queryGroups(): Observable<Group[]> {
+    return from(this._database.listGroups()).pipe(
+      map((entries) => {
+        return entries.map((entry) => new Group(entry as IGroup));
       })
     );
   }
 
   createGroup(groupInput: IGroupInput): Observable<Group> {
-    return this._crud
-      .create('groups', groupInput)
-      .pipe(map((project) => new Group(project)));
+    return from(this._database.addGroup(groupInput)).pipe(
+      map((entry) => new Group(entry as IGroup))
+    );
   }
 
   getGroup(groupId: number): Observable<Group> {
-    return this._crud
-      .read(`groups/${groupId}`)
-      .pipe(map((group) => new Group(group)));
+    return from(this._database.getGroup(groupId)).pipe(
+      map((entry) => new Group(entry as IGroup))
+    );
   }
 
   updateGroup(groupId: number, groupInput: IGroupInput): Observable<Group> {
-    return this._crud
-      .update(`groups/${groupId}`, groupInput)
-      .pipe(map((group) => new Group(group)));
+    return from(
+      this._database.updateGroup({ id: groupId, ...groupInput })
+    ).pipe(map((entry) => new Group(entry as IGroup)));
   }
 
-  deleteGroup(groupId: number): Observable<null> {
-    return this._crud.delete(`groups/${groupId}`);
+  deleteGroup(groupId: number): Observable<void> {
+    return from(this._database.deleteGroup(groupId));
   }
 }
