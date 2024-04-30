@@ -14,32 +14,51 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 import { Injectable } from '@angular/core';
-import { IDocument, Document } from '../document/document.service';
+import { IDocument, DocumentService } from '../document/document.service';
 import {
   CRUDService,
   IPage,
   IQueryParams,
 } from '../shared/services/crud.service';
-import { map } from 'rxjs';
+import { Observable, map, switchMap } from 'rxjs';
+import { HttpErrorResponse } from '@angular/common/http';
+
+export interface IQueryResultLocation {
+  id: string;
+  type: string;
+  path: string[];
+}
+
+export interface IQueryResultDocumentLocation extends IQueryResultLocation {
+  document: IDocument;
+}
 
 export interface IQueryResult {
   score: number;
   content: string;
-  headers: string[];
-  document: IDocument;
+  locations: IQueryResultLocation[];
 }
 
 export class QueryResult implements IQueryResult {
   score: number;
   content: string;
-  headers: string[];
-  document: Document;
+  locations: IQueryResultDocumentLocation[];
 
-  constructor(queryResult: IQueryResult) {
+  constructor(queryResult: IQueryResult, documents: IDocument[] = []) {
     this.score = queryResult.score;
     this.content = queryResult.content;
-    this.headers = queryResult.headers;
-    this.document = new Document(queryResult.document);
+    this.locations = queryResult.locations.map((location) => {
+      const document = documents.find((doc) => doc.id === location.id);
+      if (!document) {
+        // FIXME: Define and use own error type this type of error
+        throw new HttpErrorResponse({
+          status: 404,
+          statusText: 'Not Found',
+          error: `Document with ID ${location.id} not found in documents array`,
+        });
+      }
+      return { ...location, document };
+    });
   }
 }
 
