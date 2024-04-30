@@ -20,11 +20,15 @@ import { QueryResult } from './query.service';
   selector: 'app-query-result',
   template: `
     <mat-card appearance="outlined">
-      <mat-card-header>
-        <mat-card-title>{{ queryResult.document.title }}</mat-card-title>
+      <mat-card-header *ngIf="queryResult.locations.length > 0">
+        <mat-card-title>{{
+          queryResult.locations[0].document.title
+        }}</mat-card-title>
         <mat-card-subtitle>
           <div class="breadcrumb fx-row fx-wrap fx-gap-5">
-            <span *ngFor="let header of queryResult.headers">{{ header }}</span>
+            <span *ngFor="let header of queryResult.locations[0].path">{{
+              header
+            }}</span>
           </div>
         </mat-card-subtitle>
       </mat-card-header>

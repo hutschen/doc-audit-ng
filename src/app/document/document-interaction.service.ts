@@ -43,17 +43,10 @@ export class DocumentInteractionService
     protected _confirmDialogService: ConfirmDialogService
   ) {}
 
-  async onCreateDocument(
-    group: Group,
-    documentInput: IDocumentInput
-  ): Promise<void> {
+  async onCreateDocument(documentInput: IDocumentInput): Promise<void> {
     const dialogRef = this._uploadDialogService.openUploadDialog(
       (file: File) => {
-        return this._documentService.createDocument(
-          group.id,
-          documentInput,
-          file
-        );
+        return this._documentService.createDocument(documentInput, file);
       }
     );
     const uploadState = await firstValueFrom(dialogRef.afterClosed());

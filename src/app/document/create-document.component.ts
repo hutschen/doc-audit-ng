@@ -104,11 +104,9 @@ export class CreateDocumentComponent implements OnDestroy {
     const documentInput: IDocumentInput = {
       title: this.documentTitle,
       language: this.documentLanguage,
+      groupId: this.group.id,
     };
-    await this._documentInteractions.onCreateDocument(
-      this.group,
-      documentInput
-    );
+    await this._documentInteractions.onCreateDocument(documentInput);
     form.resetForm({ language: 'de' });
   }
 
