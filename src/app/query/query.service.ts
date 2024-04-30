@@ -66,24 +66,38 @@ export class QueryResult implements IQueryResult {
   providedIn: 'root',
 })
 export class QueryService {
-  constructor(protected _crud: CRUDService<null, IQueryResult>) {}
+  constructor(
+    protected _documents: DocumentService,
+    protected _crud: CRUDService<null, IQueryResult>
+  ) {}
 
   queryResults(groupId: number, content: string, topK: number) {
-    const params: IQueryParams = {
-      content,
-      top_k: topK,
-    };
-    return this._crud.query(`groups/${groupId}/query`, params).pipe(
-      map((queryResults) => {
-        if (Array.isArray(queryResults)) {
-          return queryResults.map((result) => new QueryResult(result));
-        } else {
-          return {
-            ...queryResults,
-            items: queryResults.items.map((result) => new QueryResult(result)),
-          } as IPage<QueryResult>;
-        }
-      })
+    return this._documents.queryDocuments(groupId).pipe(
+      // Extract source IDs from documents
+      map((documents) => ({
+        documents,
+        sourceIds: documents.map((doc) => doc.id),
+      })),
+      // Prepare query parameters
+      map(({ documents, sourceIds }) => ({
+        documents,
+        params: {
+          source_ids: sourceIds,
+          content,
+          top_k: topK,
+        } as IQueryParams,
+      })),
+      // Query for results
+      switchMap(({ documents, params }) =>
+        (this._crud.query('query', params) as Observable<IQueryResult[]>).pipe(
+          // Map query results to QueryResult instances
+          map((queryResults) => {
+            return queryResults.map((queryResult) => {
+              return new QueryResult(queryResult, documents);
+            });
+          })
+        )
+      )
     );
   }
 }
