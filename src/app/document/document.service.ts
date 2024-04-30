@@ -28,6 +28,7 @@ export type Language = 'de' | 'en';
 export interface IDocumentInput {
   title: string;
   language: Language;
+  groupId: number;
 }
 
 export interface IDocument extends IDocumentInput {
@@ -39,12 +40,14 @@ export class Document implements IDocument {
   id: string;
   title: string;
   language: Language;
+  groupId: number;
   group: Group;
 
   constructor(document: IDocument) {
     this.id = document.id;
     this.title = document.title;
     this.language = document.language;
+    this.groupId = document.groupId;
     this.group = new Group(document.group);
   }
 
@@ -52,6 +55,7 @@ export class Document implements IDocument {
     return {
       title: this.title,
       language: this.language,
+      groupId: this.groupId,
     };
   }
 }
