@@ -15,7 +15,7 @@
 
 import { Injectable } from '@angular/core';
 import { IUploadState, UploadService } from '../shared/services/upload.service';
-import { Observable } from 'rxjs';
+import { Observable, map, switchMap, takeWhile, timer } from 'rxjs';
 import { CRUDService } from '../shared/services/crud.service';
 
 type SourceStatus =
@@ -41,6 +41,16 @@ export class SourceService {
 
   uploadSource(file: File): Observable<IUploadState<ISourceReference>> {
     return this._upload.upload<ISourceReference>('sources/single', file);
+  }
+
+  getSourceStatus(
+    id: string,
+    interval: number = 5000
+  ): Observable<SourceStatus> {
+    return timer(0, interval).pipe(
+      switchMap(() => this._crud.read(`sources/${id}`)),
+      map((source) => source.status)
+    );
   }
 
   deleteSource(id: string): Observable<null> {
