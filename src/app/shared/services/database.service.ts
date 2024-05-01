@@ -42,7 +42,7 @@ export class DatabaseService {
     this._db = new Dexie('DocAudit');
     this._db.version(1).stores({
       groups: '++id, name',
-      documents: '++id, sourceId, groupId, title',
+      documents: '++id, &sourceId, groupId, title',
     });
 
     this._tableDocuments = this._db.table('documents');

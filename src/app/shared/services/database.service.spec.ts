@@ -145,6 +145,24 @@ describe('DatabaseService', () => {
     expect(document.groupId).toBe(group.id!);
   });
 
+  it('should throw an ConstraintError when adding a document with a duplicate sourceId', async () => {
+    const group = await service.addGroup({ name: 'test' });
+    const documentData = {
+      title: 'test',
+      sourceId: 'uuid-1',
+      groupId: group.id!,
+    };
+    // Add a document
+    await service.addDocument(documentData);
+    try {
+      // Try to add the same document (with the same sourceId) again
+      await service.addDocument(documentData);
+      fail('Expected an error');
+    } catch (error) {
+      expect((error as Error).name).toBe('ConstraintError');
+    }
+  });
+
   it('should list added document', async () => {
     const group = await service.addGroup({ name: 'test' });
     const document = await service.addDocument({
