@@ -48,7 +48,7 @@ export class QueryResult implements IQueryResult {
     this.score = queryResult.score;
     this.content = queryResult.content;
     this.locations = queryResult.locations.map((location) => {
-      const document = documents.find((doc) => doc.id === location.id);
+      const document = documents.find((doc) => doc.sourceId === location.id);
       if (!document) {
         // FIXME: Define and use own error type this type of error
         throw new HttpErrorResponse({
@@ -76,7 +76,7 @@ export class QueryService {
       // Extract source IDs from documents
       map((documents) => ({
         documents,
-        sourceIds: documents.map((doc) => doc.id),
+        sourceIds: documents.map((doc) => doc.sourceId),
       })),
       // Prepare query parameters
       map(({ documents, sourceIds }) => ({
