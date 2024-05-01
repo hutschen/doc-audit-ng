@@ -23,7 +23,8 @@ export interface IGroupEntry {
 }
 
 export interface IDocumentEntry {
-  id: string; // externally generated UUID
+  id?: number;
+  sourceId: string; // externally generated UUID
   groupId: number; // Foreign Key of IGroup
   group?: IGroupEntry; // Set when IDocument from Database
   title: string;
@@ -34,14 +35,14 @@ export interface IDocumentEntry {
 })
 export class DatabaseService {
   private _db: Dexie;
-  private _tableDocuments: Dexie.Table<IDocumentEntry, string>;
+  private _tableDocuments: Dexie.Table<IDocumentEntry, number>;
   private _tableGroups: Dexie.Table<IGroupEntry, number>;
 
   constructor() {
     this._db = new Dexie('DocAudit');
     this._db.version(1).stores({
       groups: '++id, name',
-      documents: 'id, groupId, title',
+      documents: '++id, sourceId, groupId, title',
     });
 
     this._tableDocuments = this._db.table('documents');
@@ -122,14 +123,13 @@ export class DatabaseService {
   }
 
   async addDocument(document: IDocumentEntry): Promise<IDocumentEntry> {
-    const { group, ...document_ } = document;
-    const group_ = await this.getGroup(document.groupId);
+    const { id, group, ...document_ } = document;
+    document.group = await this.getGroup(document.groupId);
     document.id = await this._tableDocuments.add(document_);
-    document.group = group_;
     return document;
   }
 
-  async getDocument(documentId: string): Promise<IDocumentEntry> {
+  async getDocument(documentId: number): Promise<IDocumentEntry> {
     const document = await this._tableDocuments.get(documentId);
     if (!document) {
       throw new HttpErrorResponse({
@@ -145,6 +145,15 @@ export class DatabaseService {
 
   async updateDocument(document: IDocumentEntry): Promise<IDocumentEntry> {
     const { id, group, ...update } = document;
+    if (!id) {
+      // FIXME: Define and use own error type for database errors.
+      throw new HttpErrorResponse({
+        status: 400,
+        statusText: 'Bad Request',
+        error: 'Document id missing',
+      });
+    }
+
     const group_ = await this.getGroup(update.groupId);
     if (!(await this._tableDocuments.update(id, update))) {
       throw new HttpErrorResponse({
@@ -157,7 +166,7 @@ export class DatabaseService {
     return document;
   }
 
-  async deleteDocument(documentId: string): Promise<void> {
+  async deleteDocument(documentId: number): Promise<void> {
     await this._tableDocuments.delete(documentId);
   }
 }

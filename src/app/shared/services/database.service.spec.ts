@@ -135,20 +135,21 @@ describe('DatabaseService', () => {
   it('should add document', async () => {
     const group = await service.addGroup({ name: 'test' });
     const document = await service.addDocument({
-      id: 'uuid-1',
       title: 'test',
+      sourceId: 'uuid-1',
       groupId: group.id!,
     });
     expect(document.id).toBeDefined();
     expect(document.title).toBe('test');
+    expect(document.sourceId).toBe('uuid-1');
     expect(document.groupId).toBe(group.id!);
   });
 
   it('should list added document', async () => {
     const group = await service.addGroup({ name: 'test' });
     const document = await service.addDocument({
-      id: 'uuid-1',
       title: 'test',
+      sourceId: 'uuid-1',
       groupId: group.id!,
     });
     const documents = await service.listDocuments(group.id!);
@@ -159,8 +160,8 @@ describe('DatabaseService', () => {
   it('should get document', async () => {
     const group = await service.addGroup({ name: 'test' });
     const document = await service.addDocument({
-      id: 'uuid-1',
       title: 'test',
+      sourceId: 'uuid-1',
       groupId: group.id!,
     });
     const fetchedDocument = await service.getDocument(document.id!);
@@ -170,7 +171,7 @@ describe('DatabaseService', () => {
 
   it('should throw 404 when getting non-existing document', async () => {
     try {
-      await service.getDocument('uuid-1');
+      await service.getDocument(42);
       fail('Expected an error');
     } catch (error) {
       const httpError = error as HttpErrorResponse;
@@ -182,8 +183,8 @@ describe('DatabaseService', () => {
   it('should update document', async () => {
     const group = await service.addGroup({ name: 'test' });
     const document = await service.addDocument({
-      id: 'uuid-1',
       title: 'test',
+      sourceId: 'uuid-1',
       groupId: group.id!,
     });
     document.title = 'updated';
@@ -198,8 +199,9 @@ describe('DatabaseService', () => {
 
     try {
       await service.updateDocument({
-        id: 'uuid-1',
+        id: 42,
         title: 'test',
+        sourceId: 'uuid-1',
         groupId: group.id!,
       });
       fail('Expected an error');
@@ -214,8 +216,8 @@ describe('DatabaseService', () => {
     // Create a group and a document
     const group = await service.addGroup({ name: 'test' });
     const document = await service.addDocument({
-      id: 'uuid-1',
       title: 'test',
+      sourceId: 'uuid-1',
       groupId: group.id!,
     });
 
@@ -232,7 +234,7 @@ describe('DatabaseService', () => {
       expect(httpError.status).toBe(404);
 
       // Check that the document was not updated
-      const updatedDocument = await service.getDocument(document.id);
+      const updatedDocument = await service.getDocument(document.id!);
       expect(updatedDocument.groupId).toBe(group.id!);
     }
   });
@@ -240,8 +242,8 @@ describe('DatabaseService', () => {
   it('should delete document', async () => {
     const group = await service.addGroup({ name: 'test' });
     const document = await service.addDocument({
-      id: 'uuid-1',
       title: 'test',
+      sourceId: 'uuid-1',
       groupId: group.id!,
     });
     await service.deleteDocument(document.id!);
@@ -256,15 +258,15 @@ describe('DatabaseService', () => {
   });
 
   it('should not throw an error when deleting non-existing document', async () => {
-    await service.deleteDocument('uuid-1');
+    await service.deleteDocument(42);
   });
 
   it('should delete all associated documents when deleting a group', async () => {
     // Add a group and a document associated with the group
     const group = await service.addGroup({ name: 'test' });
     const document = await service.addDocument({
-      id: 'uuid-1',
       title: 'test',
+      sourceId: 'uuid-1',
       groupId: group.id!,
     });
 
