@@ -134,6 +134,9 @@ export class DocumentService {
   }
 
   deleteDocument(documentId: number): Observable<void> {
-    return from(this._database.deleteDocument(documentId));
+    return from(this._database.getDocument(documentId)).pipe(
+      concatMap((document) => this._sources.deleteSource(document.sourceId)),
+      concatMap(() => this._database.deleteDocument(documentId))
+    );
   }
 }

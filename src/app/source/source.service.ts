@@ -16,6 +16,7 @@
 import { Injectable } from '@angular/core';
 import { IUploadState, UploadService } from '../shared/services/upload.service';
 import { Observable } from 'rxjs';
+import { CRUDService } from '../shared/services/crud.service';
 
 type SourceStatus =
   | 'waiting'
@@ -33,9 +34,16 @@ export interface ISourceReference {
   providedIn: 'root',
 })
 export class SourceService {
-  constructor(protected _upload: UploadService) {}
+  constructor(
+    protected _upload: UploadService,
+    protected _crud: CRUDService<null, ISourceReference>
+  ) {}
 
   uploadSource(file: File): Observable<IUploadState<ISourceReference>> {
     return this._upload.upload<ISourceReference>('sources/single', file);
+  }
+
+  deleteSource(id: string): Observable<null> {
+    return this._crud.delete(`sources/${id}`);
   }
 }
