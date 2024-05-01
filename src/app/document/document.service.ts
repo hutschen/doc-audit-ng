@@ -30,14 +30,16 @@ export interface IDocumentInput {
 }
 
 export interface IDocument extends IDocumentInput {
-  id: string;
+  id: number;
+  sourceId: string;
   group: IGroup;
 }
 
 export class Document implements IDocument {
-  id: string;
+  id: number;
   title: string;
   language: Language;
+  sourceId: string;
   groupId: number;
   group: Group;
 
@@ -45,6 +47,7 @@ export class Document implements IDocument {
     this.id = document.id;
     this.title = document.title;
     this.language = document.language;
+    this.sourceId = document.sourceId;
     this.groupId = document.groupId;
     this.group = new Group(document.group);
   }
@@ -86,7 +89,7 @@ export class DocumentService {
           return from(
             this._database.addDocument({
               ...documentInput,
-              id: uploadState.result!.id,
+              sourceId: uploadState.result!.id,
             })
           ).pipe(
             map((entry) => ({ ...entry, language: 'de' } as IDocument)),
@@ -108,24 +111,31 @@ export class DocumentService {
     );
   }
 
-  getDocument(documentId: string): Observable<Document> {
+  getDocument(documentId: number): Observable<Document> {
     return from(this._database.getDocument(documentId)).pipe(
       map((entry) => new Document({ language: 'de', ...entry } as IDocument))
     );
   }
 
   updateDocument(
-    documentId: string,
+    documentId: number,
     documentInput: IDocumentInput
   ): Observable<Document> {
-    return from(
-      this._database.updateDocument({ id: documentId, ...documentInput })
-    ).pipe(
+    // Get the document from the database to get the sourceId
+    return from(this._database.getDocument(documentId)).pipe(
+      // Merge the documentInput with the sourceId to get a full DocumentEntry
+      map((entry) => ({
+        id: documentId,
+        sourceId: entry.sourceId,
+        ...documentInput,
+      })),
+      // Perform updating the DocumentEntry in the database
+      concatMap((entry) => this._database.updateDocument(entry)),
       map((entry) => new Document({ language: 'de', ...entry } as IDocument))
     );
   }
 
-  deleteDocument(documentId: string): Observable<void> {
+  deleteDocument(documentId: number): Observable<void> {
     return from(this._database.deleteDocument(documentId));
   }
 }
