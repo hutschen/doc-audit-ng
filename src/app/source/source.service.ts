@@ -15,7 +15,16 @@
 
 import { Injectable } from '@angular/core';
 import { IUploadState, UploadService } from '../shared/services/upload.service';
-import { Observable, map, switchMap, takeWhile, timer } from 'rxjs';
+import {
+  Observable,
+  concat,
+  concatMap,
+  map,
+  of,
+  switchMap,
+  takeWhile,
+  timer,
+} from 'rxjs';
 import { CRUDService } from '../shared/services/crud.service';
 
 type SourceStatus =
@@ -40,7 +49,33 @@ export class SourceService {
   ) {}
 
   uploadSource(file: File): Observable<IUploadState<ISourceReference>> {
-    return this._upload.upload<ISourceReference>('sources/single', file);
+    return this._upload.upload<ISourceReference>('sources/single', file).pipe(
+      // FIXME: This is a temporary workaround to keep the upload waiting for indexing to complete.
+      concatMap((uploadState) => {
+        if (uploadState.state !== 'done') {
+          // While the upload is still in progress, return the current state
+          return of(uploadState);
+        } else {
+          return concat(
+            this.getSourceStatus(uploadState.result!.id).pipe(
+              takeWhile(
+                (status) => ['waiting', 'indexing'].includes(status),
+                true
+              ),
+              // Change the state to 'in_progress' while waiting for indexing to complete
+              map(
+                () =>
+                  ({
+                    ...uploadState,
+                    state: 'in_progress',
+                  } as IUploadState<ISourceReference>)
+              )
+            ),
+            of(uploadState) // Append the final state after indexing is complete
+          );
+        }
+      })
+    );
   }
 
   getSourceStatus(
