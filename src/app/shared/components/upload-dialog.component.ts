@@ -19,7 +19,7 @@ import {
   MatDialogRef,
   MAT_DIALOG_DATA,
 } from '@angular/material/dialog';
-import { Observable } from 'rxjs';
+import { Observable, finalize } from 'rxjs';
 import { IUploadState } from '../services/upload.service';
 
 @Injectable({
@@ -128,18 +128,21 @@ export class UploadDialogComponent {
   onUpload(): void {
     if (this.file) {
       // handle upload
-      const subscription = this._callback(this.file).subscribe({
-        next: (uploadState) => {
-          this.uploadState = uploadState;
-          if (uploadState.state === 'done') {
+      this._dialogRef.disableClose = true;
+      const subscription = this._callback(this.file)
+        .pipe(finalize(() => (this._dialogRef.disableClose = false)))
+        .subscribe({
+          next: (uploadState) => {
+            this.uploadState = uploadState;
+            if (uploadState.state === 'done') {
+              this.onClose();
+            }
+          },
+          error: (error: any) => {
             this.onClose();
-          }
-        },
-        error: (error: any) => {
-          this.onClose();
-          throw error;
-        },
-      });
+            throw error;
+          },
+        });
 
       // handle when dialog is closed
       this._dialogRef.afterClosed().subscribe(() => {
