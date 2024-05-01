@@ -15,7 +15,6 @@
 
 import { Injectable } from '@angular/core';
 import { Group, IGroup } from '../group/group.service';
-import { CRUDService } from '../shared/services/crud.service';
 import { Observable, concatMap, from, map, of } from 'rxjs';
 import { IUploadState, UploadService } from '../shared/services/upload.service';
 import { DatabaseService } from '../shared/services/database.service';
@@ -68,7 +67,6 @@ export class DocumentService {
   constructor(
     protected _database: DatabaseService,
     protected _sources: SourceService,
-    protected _crud: CRUDService<IDocumentInput, IDocument>,
     protected _upload: UploadService
   ) {}
 
