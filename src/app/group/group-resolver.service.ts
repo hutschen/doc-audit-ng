@@ -15,7 +15,7 @@
 
 import { Injectable } from '@angular/core';
 import { Group, GroupService } from './group.service';
-import { ActivatedRouteSnapshot, Resolve, Router } from '@angular/router';
+import { ActivatedRouteSnapshot, Router } from '@angular/router';
 import { EMPTY, Observable, catchError } from 'rxjs';
 import { toInt } from 'radash';
 import { HttpErrorResponse } from '@angular/common/http';
@@ -24,7 +24,7 @@ import { HttpErrorResponse } from '@angular/common/http';
 @Injectable({
   providedIn: 'root',
 })
-export class GroupResolver implements Resolve<Group> {
+export class GroupResolver  {
   protected _errorRoute = ['/groups'];
 
   constructor(
@@ -56,7 +56,7 @@ export class GroupResolver implements Resolve<Group> {
 @Injectable({
   providedIn: 'root',
 })
-export class GroupsResolver implements Resolve<Group[]> {
+export class GroupsResolver  {
   constructor(protected _groupService: GroupService) {}
 
   resolve(): Observable<Group[]> {

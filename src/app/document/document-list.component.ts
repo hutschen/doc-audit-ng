@@ -51,6 +51,7 @@ import { QueryDialogService } from '../query/query-dialog.component';
           mat-flat-button
           color="accent"
           (click)="queryDialogService.openQueryDialog(group)"
+          [disabled]="!hasDocuments"
         >
           <mat-icon>bolt</mat-icon>
           Query
@@ -130,6 +131,10 @@ export class DocumentListComponent implements OnDestroy {
         takeUntil(this._unsubscribeAll)
       )
     );
+  }
+
+  get hasDocuments(): boolean {
+    return this.documents.items.length > 0;
   }
 
   get reversedDocuments(): Document[] {
